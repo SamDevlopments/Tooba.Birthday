@@ -4161,6 +4161,11 @@ document.addEventListener('DOMContentLoaded', () => {
         flame.style.display = 'none';
       }
       
+      // Play candle blow sound
+      const candleBlowSfx = new Audio('https://res.cloudinary.com/dwwj6cltj/video/upload/v1777375033/candle_blow_uvb5wl.wav');
+      candleBlowSfx.volume = 0.6;
+      candleBlowSfx.play().catch(e => console.log('SFX play failed:', e));
+      
       // Mini confetti
       fireConfetti({
         particleCount: 15,
@@ -5262,16 +5267,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load bird sprite states
     const maleBirdFly = new Image();
-    maleBirdFly.src = 'App Data/Game Elements/birds/sprites/Male Bird/Female Bird (on click).png';
+    maleBirdFly.src = 'https://i.ibb.co/3mMS1Jp4/Female-Bird-on-click.png';
     
     const maleBirdFall = new Image();
-    maleBirdFall.src = 'App Data/Game Elements/birds/sprites/Male Bird/Female Bird (on fall).png';
+    maleBirdFall.src = 'https://i.ibb.co/ZzcgQJnY/Female-Bird-on-fall.png';
     
     const femaleBirdFly = new Image();
-    femaleBirdFly.src = 'App Data/Game Elements/birds/sprites/Female Bird/Female Bird (on fly).png';
+    femaleBirdFly.src = 'https://i.ibb.co/679kNd5N/Female-Bird-on-fly.png';
     
     const femaleBirdFall = new Image();
-    femaleBirdFall.src = 'App Data/Game Elements/birds/sprites/Female Bird/Female Bird (on fall).png';
+    femaleBirdFall.src = 'https://i.ibb.co/GvtfStk4/Female-Bird-on-fall.png';
     
     // Track bird states
     let maleBirdState = 'fly';
@@ -5604,16 +5609,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load bird sprite states
     const maleBirdFly = new Image();
-    maleBirdFly.src = 'App Data/Game Elements/birds/sprites/Male Bird/Female Bird (on click).png';
+    maleBirdFly.src = 'https://i.ibb.co/3mMS1Jp4/Female-Bird-on-click.png';
     
     const maleBirdFall = new Image();
-    maleBirdFall.src = 'App Data/Game Elements/birds/sprites/Male Bird/Female Bird (on fall).png';
+    maleBirdFall.src = 'https://i.ibb.co/ZzcgQJnY/Female-Bird-on-fall.png';
     
     const femaleBirdFly = new Image();
-    femaleBirdFly.src = 'App Data/Game Elements/birds/sprites/Female Bird/Female Bird (on fly).png';
+    femaleBirdFly.src = 'https://i.ibb.co/679kNd5N/Female-Bird-on-fly.png';
     
     const femaleBirdFall = new Image();
-    femaleBirdFall.src = 'App Data/Game Elements/birds/sprites/Female Bird/Female Bird (on fall).png';
+    femaleBirdFall.src = 'https://i.ibb.co/GvtfStk4/Female-Bird-on-fall.png';
     
     // Track bird states
     let maleBirdState = 'fly';
@@ -6014,7 +6019,7 @@ document.addEventListener('DOMContentLoaded', () => {
     notification.className = 'ios-notification';
     notification.innerHTML = `
       <div class="app-icon">
-        <img src="App Data/Profile.jpg" alt="Samad" onclick="window.open('https://www.instagram.com/samad.wav/', '_blank')" style="cursor: pointer;">
+        <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" onclick="window.open('https://www.instagram.com/samad.wav/', '_blank')" style="cursor: pointer;">
       </div>
       
       <div class="notification-body">
@@ -8090,34 +8095,34 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function loadDemoPlaylist() {
       playlist = [
-        { title: 'Barish', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258311/Barish_capkfb.wav', vinyl: 'Vinyl Disc (1).png' },
-        { title: 'Chale Aana', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258329/Chale_Aana_o51zfr.wav', vinyl: 'Vinyl Disc (2).png' },
-        { title: 'Dil Sambhal Jaa Zara', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258312/Dil_Sambhal_Jaa_Zara_fygbq2.mp4', vinyl: 'Vinyl Disc (3).png' },
-        { title: 'Ek Mulaqat', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258340/Ek_Mulaqat_rhckgg.wav', vinyl: 'Vinyl Disc (4).png' },
-        { title: 'Hua Hai Aj Pehli Bar', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258331/Hua_Hai_Aj_Pehli_Bar_ejfd1x.wav', vinyl: 'Vinyl Disc (5).png' },
-        { title: 'Ishq De Fanyar', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258271/Ishq_De_Fanyar_nmayco.mp3', vinyl: 'Vinyl Disc (6).png' },
-        { title: 'Khat', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258274/Khat_o7epcm.wav', vinyl: 'Vinyl Disc (7).png' },
-        { title: 'Mai Fir Bhi Tumko Chahuga', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258308/Mai_Fir_Bhi_Tumko_Chahuga_yn8gl6.wav', vinyl: 'Vinyl Disc (8).png' },
-        { title: 'Mere Pas Tum Ho P1', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258433/Mere_Pas_Tum_Ho_P1_mfs2nk.wav', vinyl: 'Vinyl Disc (9).png' },
-        { title: 'Mere Pas Tum Ho P2', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258442/Mere_Pas_Tum_Ho_P2_fhzmus.wav', vinyl: 'Vinyl Disc (10).png' },
-        { title: 'Mere Pas Tum Ho P3', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258431/Mere_Pas_Tum_Ho_P3_o105we.wav', vinyl: 'Vinyl Disc (11).png' },
-        { title: 'Noor Mehal', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258318/Noor_Mehal_jjx1uy.wav', vinyl: 'Vinyl Disc (12).png' },
-        { title: 'Ore Piya', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258322/Ore_Piya_wsmlz6.wav', vinyl: 'Vinyl Disc (13).png' },
-        { title: 'Stare (ikka)', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258298/Sitare_ikka_zuiaq0.wav', vinyl: 'Vinyl Disc (14).png' },
-        { title: 'Tere Jeha (Cute Version)', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258504/Cute_Version_Tere_Jeha_q4tiav.wav', vinyl: 'Vinyl Disc (15).png' },
-        { title: 'Tere Jeha (Original)', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258504/Original_Tere_Jeha_z6cr0d.wav', vinyl: 'Vinyl Disc (16).png' },
-        { title: 'Tere Liye', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258295/Tere_Liye_wzdzrl.wav', vinyl: 'Vinyl Disc (17).png' },
-        { title: 'Tumhe Apna Banane Ka', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258304/Tumhe_Apna_Banane_Ka_caohpz.wav', vinyl: 'Vinyl Disc (18).png' },
-        { title: 'Ye Kya Baat Hai Ajki Chandni Me', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258315/Ye_Kya_Baat_Hai_Ajki_Chandni_Me_sfxmnp.wav', vinyl: 'Vinyl Disc (19).png' },
-        { title: 'Zara Zara P1', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258580/Zara_Zara_P1_fmelx0.wav', vinyl: 'Vinyl Disc (20).png' },
-        { title: 'Zara Zara P2', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258583/Zara_Zara_P2_p5xbst.wav', vinyl: 'Vinyl Disc (21).png' },
-        { title: 'Zara Zara P3', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258584/Zara_Zara_P3_jr4bc9.wav', vinyl: 'Vinyl Disc (22).png' },
-        { title: 'Dhun (in Rain)', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370764/Dhun_in_rain_ujboj4.wav', vinyl: 'Vinyl Disc (3).png' },
-        { title: 'Bairan', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370745/Bairan_farjko.wav', vinyl: 'Vinyl Disc (7).png' },
-        { title: 'Aitbar Dendi Han', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370744/Aitbar_Dendi_Han_z9ds0s.wav', vinyl: 'Vinyl Disc (12).png' },
-        { title: 'Jhol', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370884/Jhol_eceord.mp3', vinyl: 'Vinyl Disc (15).png' },
-        { title: 'Hua Hai Aj Pehli Bar', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370941/Hua_Hai_Aj_Pehli_Bar_knve1a.mp3', vinyl: 'Vinyl Disc (18).png' },
-        { title: 'Tu Jaane Na', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370957/Tu_Jaane_Na_inghrm.wav', vinyl: 'Vinyl Disc (5).png' }
+        { title: 'Barish', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258311/Barish_capkfb.wav', vinyl: 'https://i.ibb.co/6c9rhFNC/Vinyl-Disc-1.png' },
+        { title: 'Chale Aana', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258329/Chale_Aana_o51zfr.wav', vinyl: 'https://i.ibb.co/chz0dbFC/Vinyl-Disc-2.png' },
+        { title: 'Dil Sambhal Jaa Zara', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258312/Dil_Sambhal_Jaa_Zara_fygbq2.mp4', vinyl: 'https://i.ibb.co/8g58r2m7/Vinyl-Disc-3.png' },
+        { title: 'Ek Mulaqat', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258340/Ek_Mulaqat_rhckgg.wav', vinyl: 'https://i.ibb.co/3mJY20PL/Vinyl-Disc-4.png' },
+        { title: 'Hua Hai Aj Pehli Bar', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258331/Hua_Hai_Aj_Pehli_Bar_ejfd1x.wav', vinyl: 'https://i.ibb.co/TqP3k8sv/Vinyl-Disc-5.png' },
+        { title: 'Ishq De Fanyar', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258271/Ishq_De_Fanyar_nmayco.mp3', vinyl: 'https://i.ibb.co/ZzLYxTST/Vinyl-Disc-6.png' },
+        { title: 'Khat', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258274/Khat_o7epcm.wav', vinyl: 'https://i.ibb.co/Zzg294GZ/Vinyl-Disc-7.png' },
+        { title: 'Mai Fir Bhi Tumko Chahuga', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258308/Mai_Fir_Bhi_Tumko_Chahuga_yn8gl6.wav', vinyl: 'https://i.ibb.co/chy7Bq35/Vinyl-Disc-8.png' },
+        { title: 'Mere Pas Tum Ho P1', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258433/Mere_Pas_Tum_Ho_P1_mfs2nk.wav', vinyl: 'https://i.ibb.co/TqR0SjC7/Vinyl-Disc-9.png' },
+        { title: 'Mere Pas Tum Ho P2', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258442/Mere_Pas_Tum_Ho_P2_fhzmus.wav', vinyl: 'https://i.ibb.co/RxNmnD3/Vinyl-Disc-10.png' },
+        { title: 'Mere Pas Tum Ho P3', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258431/Mere_Pas_Tum_Ho_P3_o105we.wav', vinyl: 'https://i.ibb.co/W73WyTv/Vinyl-Disc-11.png' },
+        { title: 'Noor Mehal', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258318/Noor_Mehal_jjx1uy.wav', vinyl: 'https://i.ibb.co/MyWX3WY0/Vinyl-Disc-12.png' },
+        { title: 'Ore Piya', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258322/Ore_Piya_wsmlz6.wav', vinyl: 'https://i.ibb.co/JRZrHZkW/Vinyl-Disc-13.png' },
+        { title: 'Stare (ikka)', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258298/Sitare_ikka_zuiaq0.wav', vinyl: 'https://i.ibb.co/6RDTcx0x/Vinyl-Disc-14.png' },
+        { title: 'Tere Jeha (Cute Version)', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258504/Cute_Version_Tere_Jeha_q4tiav.wav', vinyl: 'https://i.ibb.co/DHVdY1gW/Vinyl-Disc-15.png' },
+        { title: 'Tere Jeha (Original)', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258504/Original_Tere_Jeha_z6cr0d.wav', vinyl: 'https://i.ibb.co/Y7MPGSJH/Vinyl-Disc-16.png' },
+        { title: 'Tere Liye', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258295/Tere_Liye_wzdzrl.wav', vinyl: 'https://i.ibb.co/cXcDncL0/Vinyl-Disc-17.png' },
+        { title: 'Tumhe Apna Banane Ka', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258304/Tumhe_Apna_Banane_Ka_caohpz.wav', vinyl: 'https://i.ibb.co/kVzj9rzJ/Vinyl-Disc-18.png' },
+        { title: 'Ye Kya Baat Hai Ajki Chandni Me', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258315/Ye_Kya_Baat_Hai_Ajki_Chandni_Me_sfxmnp.wav', vinyl: 'https://i.ibb.co/qL7KdWT4/Vinyl-Disc-19.png' },
+        { title: 'Zara Zara P1', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258580/Zara_Zara_P1_fmelx0.wav', vinyl: 'https://i.ibb.co/BVn2sW51/Vinyl-Disc-20.png' },
+        { title: 'Zara Zara P2', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258583/Zara_Zara_P2_p5xbst.wav', vinyl: 'https://i.ibb.co/4ZmyS2Nb/Vinyl-Disc-21.png' },
+        { title: 'Zara Zara P3', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258584/Zara_Zara_P3_jr4bc9.wav', vinyl: 'https://i.ibb.co/5XJ82VtV/Vinyl-Disc-22.png' },
+        { title: 'Dhun (in Rain)', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370764/Dhun_in_rain_ujboj4.wav', vinyl: 'https://i.ibb.co/8g58r2m7/Vinyl-Disc-3.png' },
+        { title: 'Bairan', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370745/Bairan_farjko.wav', vinyl: 'https://i.ibb.co/Zzg294GZ/Vinyl-Disc-7.png' },
+        { title: 'Aitbar Dendi Han', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370744/Aitbar_Dendi_Han_z9ds0s.wav', vinyl: 'https://i.ibb.co/MyWX3WY0/Vinyl-Disc-12.png' },
+        { title: 'Jhol', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370884/Jhol_eceord.mp3', vinyl: 'https://i.ibb.co/DHVdY1gW/Vinyl-Disc-15.png' },
+        { title: 'Hua Hai Aj Pehli Bar', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370941/Hua_Hai_Aj_Pehli_Bar_knve1a.mp3', vinyl: 'https://i.ibb.co/kVzj9rzJ/Vinyl-Disc-18.png' },
+        { title: 'Tu Jaane Na', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370957/Tu_Jaane_Na_inghrm.wav', vinyl: 'https://i.ibb.co/TqP3k8sv/Vinyl-Disc-5.png' }
       ];
       fetchDurations();
       renderPlaylist();
@@ -8219,7 +8224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (titleEl) titleEl.textContent = playlist[index].title;
         if (artistEl) artistEl.textContent = playlist[index].artist;
         if (vinylImg && playlist[index].vinyl) {
-          vinylImg.src = 'App Data/Vinyl Disc/' + playlist[index].vinyl;
+          vinylImg.src = playlist[index].vinyl;
         }
         
         document.querySelectorAll('.playlist-item').forEach((item, i) => {
