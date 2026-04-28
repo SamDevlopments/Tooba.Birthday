@@ -30,6 +30,152 @@ let conversationState = {
 
 console.log('Script loaded successfully');
 
+// ===== Typing Sound Effect (Optimized) =====
+const TYPING_SFX_URLS = [
+  'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377052/typing_1_dohv3o.mp3',
+  'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377052/typing_2_zhxz7k.mp3'
+];
+const BACKSPACE_SFX_URL = 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377498/backspace_jbcnio.mp3';
+const TYPING_VOLUME = 0.25;
+const BACKSPACE_VOLUME = 0.3;
+const TYPING_THROTTLE_MS = 80; // Min ms between sounds
+
+// Audio pools for both sounds
+const audioPools = [[], []];
+const backspaceAudioPool = [];
+const POOL_SIZE = 3; // 3 per sound type
+let poolIndices = [0, 0];
+let lastTypingTime = 0;
+
+// ===== Image Preloader =====
+const imageCache = {};
+
+function preloadImage(url) {
+  if (imageCache[url]) return imageCache[url];
+
+  const img = new Image();
+  img.src = url;
+  imageCache[url] = img;
+  return img;
+}
+
+// Preload critical images immediately
+const CRITICAL_IMAGES = [
+  'https://i.ibb.co/jv00vHGV/Profile.jpg',
+  'https://i.ibb.co/3mMS1Jp4/Female-Bird-on-click.png',
+  'https://i.ibb.co/ZzcgQJnY/Female-Bird-on-fall.png',
+  'https://i.ibb.co/679kNd5N/Female-Bird-on-fly.png',
+  'https://i.ibb.co/GvtfStk4/Female-Bird-on-fall.png',
+  // All vinyl disc images
+  'https://i.ibb.co/6c9rhFNC/Vinyl-Disc-1.png',
+  'https://i.ibb.co/chz0dbFC/Vinyl-Disc-2.png',
+  'https://i.ibb.co/8g58r2m7/Vinyl-Disc-3.png',
+  'https://i.ibb.co/3mJY20PL/Vinyl-Disc-4.png',
+  'https://i.ibb.co/TqP3k8sv/Vinyl-Disc-5.png',
+  'https://i.ibb.co/ZzLYxTST/Vinyl-Disc-6.png',
+  'https://i.ibb.co/Zzg294GZ/Vinyl-Disc-7.png',
+  'https://i.ibb.co/chy7Bq35/Vinyl-Disc-8.png',
+  'https://i.ibb.co/TqR0SjC7/Vinyl-Disc-9.png',
+  'https://i.ibb.co/RxNmnD3/Vinyl-Disc-10.png',
+  'https://i.ibb.co/W73WyTv/Vinyl-Disc-11.png',
+  'https://i.ibb.co/MyWX3WY0/Vinyl-Disc-12.png',
+  'https://i.ibb.co/JRZrHZkW/Vinyl-Disc-13.png',
+  'https://i.ibb.co/6RDTcx0x/Vinyl-Disc-14.png',
+  'https://i.ibb.co/DHVdY1gW/Vinyl-Disc-15.png',
+  'https://i.ibb.co/Y7MPGSJH/Vinyl-Disc-16.png',
+  'https://i.ibb.co/cXcDncL0/Vinyl-Disc-17.png',
+  'https://i.ibb.co/kVzj9rzJ/Vinyl-Disc-18.png',
+  'https://i.ibb.co/qL7KdWT4/Vinyl-Disc-19.png',
+  'https://i.ibb.co/BVn2sW51/Vinyl-Disc-20.png',
+  'https://i.ibb.co/4ZmyS2Nb/Vinyl-Disc-21.png',
+  'https://i.ibb.co/5XJ82VtV/Vinyl-Disc-22.png'
+];
+
+CRITICAL_IMAGES.forEach(url => preloadImage(url));
+
+// Preload audio files
+function preloadTypingSfx() {
+  TYPING_SFX_URLS.forEach((url, idx) => {
+    for (let i = 0; i < POOL_SIZE; i++) {
+      const audio = new Audio(url);
+      audio.volume = TYPING_VOLUME;
+      audio.preload = 'auto';
+      audioPools[idx].push(audio);
+    }
+  });
+  // Preload backspace sound
+  for (let i = 0; i < POOL_SIZE; i++) {
+    const audio = new Audio(BACKSPACE_SFX_URL);
+    audio.volume = BACKSPACE_VOLUME;
+    audio.preload = 'auto';
+    backspaceAudioPool.push(audio);
+  }
+}
+preloadTypingSfx();
+
+let backspacePoolIndex = 0;
+
+// Play backspace sound with throttling and pooling
+function playBackspaceSound() {
+  const now = Date.now();
+  if (now - lastTypingTime < TYPING_THROTTLE_MS) return;
+  lastTypingTime = now;
+
+  const sfx = backspaceAudioPool[backspacePoolIndex];
+  backspacePoolIndex = (backspacePoolIndex + 1) % POOL_SIZE;
+
+  sfx.currentTime = 0;
+  sfx.play().catch(() => {}); // Silently fail
+}
+
+// Play typing sound with throttling, pooling, and random sound selection
+function playTypingSound() {
+  const now = Date.now();
+  if (now - lastTypingTime < TYPING_THROTTLE_MS) return;
+  lastTypingTime = now;
+
+  // Randomly pick one of the two sounds
+  const poolIdx = Math.random() < 0.5 ? 0 : 1;
+
+  const sfx = audioPools[poolIdx][poolIndices[poolIdx]];
+  poolIndices[poolIdx] = (poolIndices[poolIdx] + 1) % POOL_SIZE;
+
+  sfx.currentTime = 0;
+  sfx.play().catch(() => {}); // Silently fail
+}
+
+// Optimized welcome screen typing SFX using requestAnimationFrame
+function startWelcomeTypingSfx() {
+  const text = "Happy Birthday Tooba!";
+  const charCount = text.length;
+  const duration = 3000;
+  const interval = duration / charCount;
+  let charIndex = 0;
+  let startTime = null;
+
+  function playNextSound(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = timestamp - startTime;
+    const expectedIndex = Math.floor(elapsed / interval);
+
+    while (charIndex < expectedIndex && charIndex < charCount) {
+      // Randomly pick one of the two sounds
+      const poolIdx = Math.random() < 0.5 ? 0 : 1;
+      const sfx = audioPools[poolIdx][poolIndices[poolIdx]];
+      poolIndices[poolIdx] = (poolIndices[poolIdx] + 1) % POOL_SIZE;
+      sfx.currentTime = 0;
+      sfx.play().catch(() => {});
+      charIndex++;
+    }
+
+    if (charIndex < charCount) {
+      requestAnimationFrame(playNextSound);
+    }
+  }
+
+  requestAnimationFrame(playNextSound);
+}
+
 // Analyze image using Google Gemini Vision API
 async function analyzeImageWithAI(imageBase64, userMessage = '') {
   try {
@@ -4837,9 +4983,20 @@ document.addEventListener('DOMContentLoaded', () => {
             input.placeholder = 'Try again...';
           }
         });
+
+        // Add typing and backspace sounds to secret phrase input
+        const secretInput = document.getElementById('secretPhraseInput');
+        secretInput.addEventListener('keypress', () => {
+          playTypingSound();
+        });
+        secretInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace') {
+            playBackspaceSound();
+          }
+        });
       }, 500);
     }
-    
+
     document.getElementById('tapBackBtn').addEventListener('click', () => {
       gameActive = false;
       clearInterval(heartSpawnInterval);
@@ -5094,6 +5251,17 @@ document.addEventListener('DOMContentLoaded', () => {
             input.placeholder = 'Try again...';
           }
         });
+
+        // Add typing and backspace sounds to secret phrase input
+        const secretInput = document.getElementById('secretPhraseInput');
+        secretInput.addEventListener('keypress', () => {
+          playTypingSound();
+        });
+        secretInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace') {
+            playBackspaceSound();
+          }
+        });
       }, 500);
     }
 
@@ -5265,18 +5433,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = canvas.getContext('2d');
     const scoreDisplay = document.getElementById('flappyScore');
     
-    // Load bird sprite states
-    const maleBirdFly = new Image();
-    maleBirdFly.src = 'https://i.ibb.co/3mMS1Jp4/Female-Bird-on-click.png';
-    
-    const maleBirdFall = new Image();
-    maleBirdFall.src = 'https://i.ibb.co/ZzcgQJnY/Female-Bird-on-fall.png';
-    
-    const femaleBirdFly = new Image();
-    femaleBirdFly.src = 'https://i.ibb.co/679kNd5N/Female-Bird-on-fly.png';
-    
-    const femaleBirdFall = new Image();
-    femaleBirdFall.src = 'https://i.ibb.co/GvtfStk4/Female-Bird-on-fall.png';
+    // Use preloaded bird sprite states from cache
+    const maleBirdFly = preloadImage('https://i.ibb.co/3mMS1Jp4/Female-Bird-on-click.png');
+    const maleBirdFall = preloadImage('https://i.ibb.co/ZzcgQJnY/Female-Bird-on-fall.png');
+    const femaleBirdFly = preloadImage('https://i.ibb.co/679kNd5N/Female-Bird-on-fly.png');
+    const femaleBirdFall = preloadImage('https://i.ibb.co/GvtfStk4/Female-Bird-on-fall.png');
     
     // Track bird states
     let maleBirdState = 'fly';
@@ -5528,12 +5689,23 @@ document.addEventListener('DOMContentLoaded', () => {
             startFlappyGameplayWithScore(score);
           }
         });
+
+        // Add typing and backspace sounds to secret phrase input
+        const secretInput = document.getElementById('secretPhraseInput');
+        secretInput.addEventListener('keypress', () => {
+          playTypingSound();
+        });
+        secretInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace') {
+            playBackspaceSound();
+          }
+        });
       }, 500);
     }
-    
+
     function loop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       // Draw background
       ctx.fillStyle = "#fff5f8";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -5607,18 +5779,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = canvas.getContext('2d');
     const scoreDisplay = document.getElementById('flappyScore');
     
-    // Load bird sprite states
-    const maleBirdFly = new Image();
-    maleBirdFly.src = 'https://i.ibb.co/3mMS1Jp4/Female-Bird-on-click.png';
-    
-    const maleBirdFall = new Image();
-    maleBirdFall.src = 'https://i.ibb.co/ZzcgQJnY/Female-Bird-on-fall.png';
-    
-    const femaleBirdFly = new Image();
-    femaleBirdFly.src = 'https://i.ibb.co/679kNd5N/Female-Bird-on-fly.png';
-    
-    const femaleBirdFall = new Image();
-    femaleBirdFall.src = 'https://i.ibb.co/GvtfStk4/Female-Bird-on-fall.png';
+    // Use preloaded bird sprite states from cache
+    const maleBirdFly = preloadImage('https://i.ibb.co/3mMS1Jp4/Female-Bird-on-click.png');
+    const maleBirdFall = preloadImage('https://i.ibb.co/ZzcgQJnY/Female-Bird-on-fall.png');
+    const femaleBirdFly = preloadImage('https://i.ibb.co/679kNd5N/Female-Bird-on-fly.png');
+    const femaleBirdFall = preloadImage('https://i.ibb.co/GvtfStk4/Female-Bird-on-fall.png');
     
     // Track bird states
     let maleBirdState = 'fly';
@@ -5861,12 +6026,23 @@ document.addEventListener('DOMContentLoaded', () => {
             startFlappyGameplayWithScore(score);
           }
         });
+
+        // Add typing and backspace sounds to secret phrase input
+        const secretInput = document.getElementById('secretPhraseInput');
+        secretInput.addEventListener('keypress', () => {
+          playTypingSound();
+        });
+        secretInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace') {
+            playBackspaceSound();
+          }
+        });
       }, 500);
     }
-    
+
     function loop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       ctx.fillStyle = "#fff5f8";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
@@ -5947,6 +6123,17 @@ document.addEventListener('DOMContentLoaded', () => {
   
   document.getElementById('answerInput').addEventListener('input', (e) => {
     quizAnswers[currentQuestionIndex] = e.target.value;
+  });
+
+  // Add typing and backspace sounds to quiz input
+  const answerInput = document.getElementById('answerInput');
+  answerInput.addEventListener('keypress', () => {
+    playTypingSound();
+  });
+  answerInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace') {
+      playBackspaceSound();
+    }
   });
   
   nextQBtn.addEventListener('click', () => {
@@ -7337,6 +7524,16 @@ document.addEventListener('DOMContentLoaded', () => {
   chatInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       sendMessage();
+    } else {
+      // Play typing sound on keypress (except Enter)
+      playTypingSound();
+    }
+  });
+
+  // Play backspace sound on backspace
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace') {
+      playBackspaceSound();
     }
   });
 
@@ -7538,6 +7735,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.classList.contains('emoji-item')) {
       chatInput.value += e.target.textContent;
       chatInput.focus();
+      // Play typing sound when adding emoji
+      playTypingSound();
       // Don't close picker - allow multiple emoji selection
       // Trigger input event to show send button
       chatInput.dispatchEvent(new Event('input'));
@@ -8135,38 +8334,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function fetchDurations() {
-      let index = 0;
-      
-      function loadNext() {
-        if (index >= playlist.length) return;
-        
-        const track = playlist[index];
-        const tempAudio = new Audio();
-        tempAudio.crossOrigin = 'anonymous';
-        tempAudio.src = track.file;
-        
-        tempAudio.addEventListener('loadedmetadata', () => {
-          if (!isNaN(tempAudio.duration) && tempAudio.duration > 0) {
-            track.duration = formatTime(tempAudio.duration);
-            const durationEl = document.querySelector(`.playlist-item-duration[data-index="${index}"]`);
-            if (durationEl) {
-              durationEl.textContent = track.duration;
-            }
+      // Load all durations in parallel for faster loading
+      const batchSize = 5; // Load 5 at a time to avoid overwhelming network
+      let currentIndex = 0;
+
+      function loadBatch() {
+        const batch = [];
+        for (let i = 0; i < batchSize && currentIndex < playlist.length; i++) {
+          batch.push(currentIndex++);
+        }
+
+        if (batch.length === 0) return;
+
+        const promises = batch.map(index => {
+          return new Promise((resolve) => {
+            const track = playlist[index];
+            const tempAudio = new Audio();
+            tempAudio.crossOrigin = 'anonymous';
+            tempAudio.preload = 'metadata';
+            tempAudio.src = track.file;
+
+            const cleanup = () => {
+              tempAudio.removeEventListener('loadedmetadata', onLoaded);
+              tempAudio.removeEventListener('error', onError);
+            };
+
+            const onLoaded = () => {
+              cleanup();
+              if (!isNaN(tempAudio.duration) && tempAudio.duration > 0) {
+                track.duration = formatTime(tempAudio.duration);
+                const durationEl = document.querySelector(`.playlist-item-duration[data-index="${index}"]`);
+                if (durationEl) {
+                  durationEl.textContent = track.duration;
+                }
+              }
+              resolve();
+            };
+
+            const onError = () => {
+              cleanup();
+              console.log(`Error loading duration for ${track.title}`);
+              resolve();
+            };
+
+            tempAudio.addEventListener('loadedmetadata', onLoaded);
+            tempAudio.addEventListener('error', onError);
+            tempAudio.load();
+          });
+        });
+
+        Promise.all(promises).then(() => {
+          if (currentIndex < playlist.length) {
+            setTimeout(loadBatch, 50); // Small delay between batches
           }
-          index++;
-          setTimeout(loadNext, 200); // Load next track after 200ms delay
         });
-        
-        tempAudio.addEventListener('error', () => {
-          console.log(`Error loading duration for ${track.title}`);
-          index++;
-          setTimeout(loadNext, 200);
-        });
-        
-        tempAudio.load();
       }
-      
-      loadNext();
+
+      loadBatch();
     }
     
     function renderPlaylist() {
