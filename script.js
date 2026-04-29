@@ -1,11 +1,147 @@
+// ===== Loading Screen =====
+
+// Initialize loading screen
+function initLoadingScreen() {
+  const loadingScreen = document.getElementById('loadingScreen');
+  const mobileFrame = document.querySelector('.mobile-frame');
+
+  // Add loading screen active class to hide chat button
+  mobileFrame.classList.add('loading-screen-active');
+
+  // Prevent right-click context menu on loading screen
+  loadingScreen.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    return false;
+  });
+
+  // Prevent drag operations on loading screen
+  loadingScreen.addEventListener('dragstart', (e) => {
+    e.preventDefault();
+    return false;
+  });
+
+  // Detect network speed and set Vimeo quality
+  setVimeoQualityBasedOnNetwork();
+
+  // Preload app data with fixed duration
+  preloadAppData(loadingScreen, mobileFrame);
+}
+
+// Set Vimeo quality based on network connection
+function setVimeoQualityBasedOnNetwork() {
+  const iframe = document.getElementById('vimeoIframe');
+  if (!iframe) return;
+
+  const player = new Vimeo.Player(iframe);
+
+  // Get network information
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+
+  if (connection) {
+    const effectiveType = connection.effectiveType; // 'slow-2g', '2g', '3g', '4g'
+    const downlink = connection.downlink; // Mbps
+
+    // Determine quality based on connection
+    let quality = '1080p'; // Default high quality
+
+    if (effectiveType === 'slow-2g' || downlink < 0.5) {
+      quality = '360p';
+    } else if (effectiveType === '2g' || downlink < 1.5) {
+      quality = '480p';
+    } else if (effectiveType === '3g' || downlink < 5) {
+      quality = '720p';
+    } else {
+      quality = '1080p'; // 4g or better
+    }
+
+    // Set quality on Vimeo player
+    player.setQuality(quality).catch(error => {
+      console.log('Quality setting not available, using auto');
+      player.setQuality('auto');
+    });
+  } else {
+    // Fallback to auto if network info not available
+    player.setQuality('auto');
+  }
+}
+
+// Preload all app resources
+async function preloadAppData(loadingScreen, mobileFrame) {
+  const resources = [
+    // Audio files - typing and backspace sounds
+    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377052/typing_1_dohv3o.mp3',
+    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377052/typing_2_zhxz7k.mp3',
+    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377498/backspace_jbcnio.mp3',
+    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777375033/candle_blow_uvb5wl.wav',
+    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777315337/Welcome_Song_tnq2wr.wav',
+    // Music playlist audio files
+    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777488119/Mai_Agar_h1pz74.mp3',
+    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258311/Barish_capkfb.wav',
+    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258329/Chale_Aana_o51zfr.wav',
+    // Image files - profile and bird sprites
+    'https://i.ibb.co/jv00vHGV/Profile.jpg',
+    'https://i.ibb.co/3mMS1Jp4/Female-Bird-on-click.png',
+    'https://i.ibb.co/ZzcgQJnY/Female-Bird-on-fall.png',
+    'https://i.ibb.co/679kNd5N/Female-Bird-on-fly.png',
+    'https://i.ibb.co/GvtfStk4/Female-Bird-on-fall.png',
+    // All vinyl disc images
+    'https://i.ibb.co/6c9rhFNC/Vinyl-Disc-1.png',
+    'https://i.ibb.co/chz0dbFC/Vinyl-Disc-2.png',
+    'https://i.ibb.co/8g58r2m7/Vinyl-Disc-3.png',
+    'https://i.ibb.co/3mJY20PL/Vinyl-Disc-4.png',
+    'https://i.ibb.co/TqP3k8sv/Vinyl-Disc-5.png',
+
+  ];
+
+  // Preload resources in background without progress tracking
+  const loadPromises = resources.map(resource => {
+    return new Promise((resolve) => {
+      if (resource.endsWith('.mp3') || resource.endsWith('.wav') || resource.endsWith('.mp4')) {
+        const audio = new Audio();
+        audio.src = resource;
+        audio.addEventListener('canplaythrough', resolve);
+        audio.addEventListener('error', resolve);
+      } else {
+        const img = new Image();
+        img.src = resource;
+        img.addEventListener('load', resolve);
+        img.addEventListener('error', resolve);
+      }
+    });
+  });
+
+  // Start preloading in background
+  Promise.all(loadPromises).then(() => {
+    console.log('All resources preloaded');
+  });
+
+  // Hide loading screen after 10 seconds
+  const loadingDuration = 10000; // 10 seconds exactly
+  setTimeout(() => {
+    loadingScreen.style.opacity = '0';
+    loadingScreen.style.transition = 'opacity 0.5s ease';
+    setTimeout(() => {
+      loadingScreen.style.display = 'none';
+      mobileFrame.classList.remove('loading-screen-active');
+    }, 500);
+  }, loadingDuration);
+}
+
+// Initialize loading screen on DOM ready
+document.addEventListener('DOMContentLoaded', initLoadingScreen);
 
 // ===== Quiz Data =====
 const quizQuestions = [
-  { id: 1, q: "What's your favorite thing to draw or paint?", placeholder: "tell me about your art..." },
-  { id: 2, q: "Which pet do you love the most - cats, parrots, or rabbits?", placeholder: "I know you love all of them..." },
-  { id: 3, q: "What's your favorite food that you can't resist?", placeholder: "foodie things..." },
-  { id: 4, q: "Dark colors or light colors - what's your vibe?", placeholder: "I know you love black and navy blue..." },
-  { id: 5, q: "What's your favorite horror movie?", placeholder: "even though you get scared..." }
+  { id: 1, q: "What question are you hoping I'll ask you?", placeholder: "something you've been wanting to share..." },
+  { id: 2, q: "Do you like surprises?", placeholder: "honest thoughts on surprises..." },
+  { id: 3, q: "When is the last time someone made you blush?", placeholder: "that sweet or embarrassing moment..." },
+  { id: 4, q: "What always makes you laugh?", placeholder: "the thing that never fails..." },
+  { id: 5, q: "What's the top song on your playlist?", placeholder: "your current favorite..." },
+  { id: 6, q: "What's the best compliment you've ever received?", placeholder: "the one that stuck with you..." },
+  { id: 7, q: "If you could kiss any fictional character, who would it be?", placeholder: "spill the tea..." },
+  { id: 8, q: "What's your love language?", placeholder: "how you feel most loved..." },
+  { id: 9, q: "What first attracted you to me?", placeholder: "what caught your attention..." },
+  { id: 10, q: "What makes you feel safe with someone?", placeholder: "that feeling of comfort..." }
 ];
 
 let quizAnswers = new Array(quizQuestions.length).fill('');
@@ -2152,6 +2288,37 @@ async function generateAIResponse(userMessage) {
 
     // Try free APIs that don't require authentication
     const chatApis = [
+      // Pollinations AI (OpenAI-compatible, no auth needed) - all available models
+      {
+        url: 'https://text.pollinations.ai/openai',
+        name: 'PollinationsAI (openai-fast)',
+        type: 'pollinations',
+        model: 'openai-fast'
+      },
+      {
+        url: 'https://text.pollinations.ai/openai',
+        name: 'PollinationsAI (openai)',
+        type: 'pollinations',
+        model: 'openai'
+      },
+      {
+        url: 'https://text.pollinations.ai/openai',
+        name: 'PollinationsAI (gpt-oss)',
+        type: 'pollinations',
+        model: 'gpt-oss'
+      },
+      {
+        url: 'https://text.pollinations.ai/openai',
+        name: 'PollinationsAI (gpt-oss-20b)',
+        type: 'pollinations',
+        model: 'gpt-oss-20b'
+      },
+      {
+        url: 'https://text.pollinations.ai/openai',
+        name: 'PollinationsAI (ovh-reasoning)',
+        type: 'pollinations',
+        model: 'ovh-reasoning'
+      },
       // Hugging Face (Free, no auth needed for inference API)
       {
         url: 'https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium',
@@ -2167,12 +2334,6 @@ async function generateAIResponse(userMessage) {
         url: 'https://api-inference.huggingface.co/models/gpt2',
         name: 'GPT-2',
         type: 'huggingface'
-      },
-      // Free text generation API
-      {
-        url: 'https://text.pollinations.ai/',
-        name: 'PollinationsAI',
-        type: 'simple'
       }
     ];
 
@@ -2184,7 +2345,45 @@ async function generateAIResponse(userMessage) {
 
         let response, data;
 
-        if (api.type === 'huggingface') {
+        if (api.type === 'pollinations') {
+          // Pollinations AI OpenAI-compatible endpoint
+          response = await fetch(api.url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: api.model || 'openai-fast',
+              messages: [
+                { role: 'user', content: userMessage }
+              ],
+              temperature: 0.7,
+              max_tokens: 200,
+              stream: false
+            }),
+          });
+
+          if (response.ok) {
+            data = await response.json();
+            console.log(`${api.name} response:`, data);
+
+            let generatedText = '';
+            if (data.choices && data.choices.length > 0) {
+              generatedText = data.choices[0].message?.content || '';
+            }
+
+            // Clean up
+            generatedText = generatedText.trim();
+
+            if (generatedText && generatedText.length > 2) {
+              aiResponse = generatedText.substring(0, 200);
+              console.log(`Successfully got response from ${api.name}`);
+              break;
+            }
+          } else {
+            console.log(`${api.name} returned status: ${response.status}`);
+          }
+        } else if (api.type === 'huggingface') {
           response = await fetch(api.url, {
             method: 'POST',
             headers: {
@@ -6184,7 +6383,6 @@ document.addEventListener('DOMContentLoaded', () => {
     "I'm not sorry for what I'm about to do to you.",
     "I own this conversation. And soon? You.",
     "That lip bite just cost you.",
-    "Dangerous? No. I'm worse.",
     "You already decided. Just say it."
   ];
 
@@ -6616,8 +6814,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale').forEach(el => {
     observer.observe(el);
   });
-  
-  // ===== Mini Chat Functionality =====
+});
+
+// ===== Mini Chat Functionality =====
+document.addEventListener('DOMContentLoaded', () => {
   const chatBtn = document.getElementById('chatBtn');
   const miniChat = document.getElementById('miniChat');
   const closeChatBtn = document.getElementById('closeChatBtn');
@@ -6634,6 +6834,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const imageViewerImg = document.getElementById('imageViewerImg');
   const imageViewerBackdrop = document.getElementById('imageViewerBackdrop');
   const imageViewerClose = document.getElementById('imageViewerClose');
+  const recordingInterface = document.getElementById('recordingInterface');
+  const cancelRecordingBtn = document.getElementById('cancelRecordingBtn');
+  const sendRecordingBtn = document.getElementById('sendRecordingBtn');
+  const recordingTimer = document.getElementById('recordingTimer');
+  const recordingWaveform = document.getElementById('recordingWaveform');
 
   // ===== Drag-to-scroll for chat messages =====
   if (chatMessages) {
@@ -6773,8 +6978,567 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.record-btn').addEventListener('click', () => {
     console.log('Record option selected');
     closePlusMenu();
-    // Add record functionality here
+    startInstagramStyleRecording();
   });
+
+  // ===== Instagram-style Voice Recording Functionality =====
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let recordingStartTime = null;
+  let timerInterval = null;
+  let recognition = null;
+  let transcriptionText = '';
+  let isRecording = false;
+  let audioContext = null;
+  let analyser = null;
+  let dataArray = null;
+  let animationId = null;
+  let audioStream = null;
+  let shouldSendOnStop = true;
+
+  async function startInstagramStyleRecording() {
+    try {
+      // Reset state
+      audioChunks = [];
+      transcriptionText = '';
+      isRecording = true;
+      shouldSendOnStop = true;
+
+      // Get audio stream
+      audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      // Setup MediaRecorder
+      mediaRecorder = new MediaRecorder(audioStream);
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunks.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        // Only send if not cancelled
+        if (!shouldSendOnStop) {
+          revertToOriginalUI();
+          return;
+        }
+
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        
+        // Cleanup
+        cleanupRecording();
+        
+        // Small delay to allow final transcription to complete
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        const finalTranscript = transcriptionText.trim();
+        console.log('Final transcript:', finalTranscript);
+        
+        // Send audio message with transcript
+        const reader = new FileReader();
+        reader.readAsDataURL(audioBlob);
+        reader.onloadend = async () => {
+          const audioBase64 = reader.result;
+          const messageWrapper = sendAudioMessage(audioBase64, finalTranscript);
+          
+          // Trigger AI response using transcript (if available) or generic response
+          const aiResponseMessage = finalTranscript || '[Voice message]';
+          
+          // Show typing indicator
+          showTypingIndicator();
+          
+          // Generate AI response
+          setTimeout(async () => {
+            hideTypingIndicator();
+            const aiResponse = await generateAIResponse(aiResponseMessage);
+            displayMessage(aiResponse, 'received');
+          }, 1500 + Math.random() * 1000);
+        };
+
+        // Revert to original UI
+        revertToOriginalUI();
+      };
+
+      // Start recording
+      mediaRecorder.start();
+      recordingStartTime = Date.now();
+      updateTimer();
+      timerInterval = setInterval(updateTimer, 1000);
+
+      // Setup real-time speech recognition
+      setupRealTimeTranscription(audioStream);
+
+      // Setup audio visualization
+      setupAudioVisualization(audioStream);
+
+      // Update UI
+      hideOriginalButtons();
+      recordingInterface.classList.remove('hidden');
+
+      // Setup button handlers
+      cancelRecordingBtn.onclick = cancelRecording;
+      sendRecordingBtn.onclick = stopRecording;
+
+    } catch (error) {
+      console.error('Error accessing microphone:', error);
+      cleanupRecording();
+      revertToOriginalUI();
+      alert('Could not access microphone. Please allow microphone access.');
+    }
+  }
+
+  function cleanupRecording() {
+    // Stop recognition
+    if (recognition) {
+      try {
+        recognition.stop();
+      } catch (e) {
+        console.error('Error stopping recognition:', e);
+      }
+      recognition = null;
+    }
+
+    // Stop waveform animation
+    if (animationId) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
+
+    // Close audio context
+    if (audioContext) {
+      try {
+        audioContext.close();
+      } catch (e) {
+        console.error('Error closing audio context:', e);
+      }
+      audioContext = null;
+    }
+
+    // Stop all media stream tracks
+    if (audioStream) {
+      audioStream.getTracks().forEach(track => {
+        try {
+          track.stop();
+        } catch (e) {
+          console.error('Error stopping track:', e);
+        }
+      });
+      audioStream = null;
+    }
+
+    // Clear timer
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+  function hideOriginalButtons() {
+    emojiBtn.classList.add('hidden');
+    chatInput.classList.add('hidden');
+    plusBtn.classList.add('hidden');
+    sendChatBtn.classList.add('hidden');
+  }
+
+  function revertToOriginalUI() {
+    emojiBtn.classList.remove('hidden');
+    chatInput.classList.remove('hidden');
+    plusBtn.classList.remove('hidden');
+    sendChatBtn.classList.remove('hidden');
+    recordingInterface.classList.add('hidden');
+  }
+
+  function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+    }
+    isRecording = false;
+  }
+
+  function cancelRecording() {
+    shouldSendOnStop = false;
+    stopRecording();
+    cleanupRecording();
+    revertToOriginalUI();
+    transcriptionText = '';
+    audioChunks = [];
+  }
+
+  function updateTimer() {
+    if (!recordingStartTime) return;
+    const elapsed = Date.now() - recordingStartTime;
+    const seconds = Math.floor(elapsed / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const displaySeconds = seconds % 60;
+    recordingTimer.textContent = `${minutes}:${displaySeconds.toString().padStart(2, '0')}`;
+  }
+
+  function setupAudioVisualization(stream) {
+    try {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(stream);
+      source.connect(analyser);
+      analyser.fftSize = 256;
+      const bufferLength = analyser.frequencyBinCount;
+      dataArray = new Uint8Array(bufferLength);
+
+      const canvas = recordingWaveform;
+      const ctx = canvas.getContext('2d');
+      
+      // Initialize canvas size
+      initCanvas(canvas, ctx);
+
+      function draw() {
+        if (!isRecording) return;
+        
+        animationId = requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
+
+        const width = canvas.offsetWidth;
+        const height = canvas.offsetHeight;
+        
+        if (width === 0 || height === 0) return;
+        
+        ctx.clearRect(0, 0, width, height);
+        
+        const barWidth = width / bufferLength * 2.5;
+        let x = 0;
+
+        for (let i = 0; i < bufferLength; i++) {
+          const barHeight = (dataArray[i] / 255) * height * 0.8;
+          
+          // Create gradient for bars - dark pink
+          const gradient = ctx.createLinearGradient(0, height - barHeight, 0, height);
+          gradient.addColorStop(0, '#a8336e');
+          gradient.addColorStop(1, 'rgba(168, 51, 110, 0.5)');
+          
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.roundRect(x, (height - barHeight) / 2, barWidth - 1, barHeight, 3);
+          ctx.fill();
+          
+          x += barWidth;
+        }
+      }
+
+      draw();
+    } catch (error) {
+      console.error('Error setting up audio visualization:', error);
+    }
+  }
+
+  function initCanvas(canvas, ctx) {
+    const setCanvasSize = () => {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * 2;
+      canvas.height = rect.height * 2;
+      ctx.scale(2, 2);
+    };
+    
+    // Try immediate sizing
+    setCanvasSize();
+    
+    // Fallback: retry if element is hidden
+    if (canvas.offsetWidth === 0) {
+      setTimeout(setCanvasSize, 100);
+    }
+  }
+
+  function setupRealTimeTranscription(stream) {
+    console.log('=== Starting speech recognition setup ===');
+    console.log('Browser:', navigator.userAgent);
+    console.log('Language:', navigator.language);
+    
+    // Check for Speech Recognition support
+    const hasSpeechRecognition = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+    
+    if (!hasSpeechRecognition) {
+      console.warn('Speech recognition NOT supported in this browser');
+      console.warn('Supported browsers: Chrome, Edge, Safari (not Firefox)');
+      showRecordingStatus('Recording audio (speech recognition not available)...');
+      return;
+    }
+
+    console.log('✓ Speech recognition supported');
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    
+    // Configure recognition for best results
+    recognition.lang = navigator.language || 'en-US';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    
+    console.log('Config:', { lang: recognition.lang, continuous: recognition.continuous, interimResults: recognition.interimResults });
+
+    let restartAttempts = 0;
+    const maxRestarts = 3;
+
+    recognition.onstart = () => {
+      console.log('✓ Speech recognition STARTED');
+      restartAttempts = 0;
+      showRecordingStatus('Listening...');
+    };
+
+    recognition.onresult = (event) => {
+      let interimTranscript = '';
+      let finalTranscript = '';
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        const isFinal = event.results[i].isFinal;
+        const confidence = event.results[i][0].confidence;
+        
+        if (isFinal) {
+          finalTranscript += transcript;
+          console.log('✓ Final transcript:', transcript, '(confidence:', confidence.toFixed(2) + ')');
+        } else {
+          interimTranscript += transcript;
+          console.log('○ Interim:', transcript);
+        }
+      }
+
+      // Always update with final results
+      if (finalTranscript) {
+        transcriptionText += finalTranscript + ' ';
+        console.log('Full transcription so far:', transcriptionText);
+      }
+      
+      // Keep interim as live backup
+      if (interimTranscript) {
+        transcriptionText = (transcriptionText + interimTranscript).trim() + ' ';
+      }
+    };
+
+    recognition.onerror = (event) => {
+      const error = event.error;
+      console.error('❌ Speech recognition ERROR:', error);
+      
+      // Auto-restart on certain errors if still recording
+      if (isRecording && restartAttempts < maxRestarts) {
+        const restartableErrors = ['no-speech', 'audio-capture', 'network', 'aborted'];
+        
+        if (restartableErrors.includes(error)) {
+          restartAttempts++;
+          console.log(`Restarting recognition (attempt ${restartAttempts}/${maxRestarts})...`);
+          
+          setTimeout(() => {
+            try {
+              if (isRecording && recognition) {
+                recognition.start();
+              }
+            } catch (e) {
+              console.error('Failed to restart recognition:', e);
+            }
+          }, 300);
+        }
+      }
+      
+      // Show user-friendly error for critical errors
+      if (error === 'not-allowed') {
+        showRecordingStatus('Mic permission denied. Check settings.');
+        alert('Microphone permission denied. Please allow microphone access in your browser settings.');
+      } else if (error === 'network') {
+        showRecordingStatus('Network error. Check internet.');
+      } else if (error === 'no-speech') {
+        showRecordingStatus('No speech detected. Try speaking louder.');
+      }
+    };
+
+    recognition.onend = () => {
+      console.log('Speech recognition ENDED');
+      
+      // Auto-restart if still recording and we haven't exceeded max attempts
+      if (isRecording && restartAttempts < maxRestarts) {
+        restartAttempts++;
+        console.log(`Auto-restarting recognition (${restartAttempts}/${maxRestarts})...`);
+        
+        setTimeout(() => {
+          try {
+            if (isRecording) {
+              recognition.start();
+            }
+          } catch (e) {
+            console.error('Auto-restart failed:', e);
+          }
+        }, 200);
+      }
+    };
+
+    // Start recognition
+    try {
+      recognition.start();
+      console.log('Recognition start() called');
+    } catch (e) {
+      console.error('❌ Failed to start recognition:', e);
+      showRecordingStatus('Speech recognition failed');
+    }
+  }
+
+  function showRecordingStatus(message) {
+    // Update the timer to show status temporarily
+    if (recordingTimer) {
+      const originalText = recordingTimer.textContent;
+      recordingTimer.textContent = message;
+      recordingTimer.style.fontSize = '12px';
+      
+      // Restore timer after 3 seconds
+      setTimeout(() => {
+        if (isRecording) {
+          recordingTimer.style.fontSize = '';
+          updateTimer();
+        }
+      }, 3000);
+    }
+  }
+
+  function sendAudioMessage(audioBase64, transcript = '') {
+    const audio = new Audio(audioBase64);
+    audio.onloadedmetadata = () => {
+      const duration = Math.floor(audio.duration);
+      const minutes = Math.floor(duration / 60);
+      const seconds = duration % 60;
+      const durationText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      const messageId = 'msg-' + Date.now();
+      const hasTranscript = transcript && transcript.length > 0;
+
+      const messageWrapper = document.createElement('div');
+      messageWrapper.className = 'message-wrapper sent';
+      messageWrapper.innerHTML = `
+        <div class="message-content-row">
+          <div class="message sent">
+            <div class="audio-message-bubble sent">
+              <button class="audio-play-btn" onclick="toggleAudioPlayback(this, '${audioBase64}')">
+                <svg viewBox="0 0 24 24">
+                  <polygon points="5,3 19,12 5,21" fill="currentColor"/>
+                </svg>
+              </button>
+              <div class="audio-waveform-container" id="waveform-${Date.now()}">
+                ${generateWaveformBars()}
+              </div>
+              <span class="audio-duration">${durationText}</span>
+            </div>
+            ${hasTranscript ? `
+            <div class="transcript-toggle" onclick="toggleTranscript('${messageId}')">
+              <span class="transcript-label"> Transcribed text</span>
+              <span class="transcript-arrow">▼</span>
+            </div>
+            <div class="transcript-text hidden" id="transcript-${messageId}">
+              ${transcript}
+            </div>
+            ` : ''}
+            <div class="quick-reactions hidden">
+              <span class="reaction-emoji">🤍</span>
+              <span class="reaction-emoji">🦢</span>
+              <span class="reaction-emoji">☁️</span>
+              <span class="reaction-emoji">🕊️</span>
+              <span class="reaction-emoji">👀</span>
+              <button class="add-reaction-btn">+</button>
+            </div>
+          </div>
+          <div class="message-actions">
+            <button class="action-btn reaction-btn" title="React">☺︎</button>
+            <button class="action-btn reply-btn" title="Reply">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4">
+                <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+              </svg>
+            </button>
+            <button class="action-btn more-btn" title="More">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                <circle cx="12" cy="5" r="2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <circle cx="12" cy="19" r="2"/>
+              </svg>
+            </button>
+          </div>
+          <div class="swipe-reply-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+            </svg>
+          </div>
+        </div>
+      `;
+      chatMessages.appendChild(messageWrapper);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      addSwipeToReply(messageWrapper);
+    };
+  }
+
+  window.toggleTranscript = function(messageId) {
+    const transcriptEl = document.getElementById(`transcript-${messageId}`);
+    const toggleEl = transcriptEl.previousElementSibling;
+    const arrow = toggleEl.querySelector('.transcript-arrow');
+    
+    if (transcriptEl.classList.contains('hidden')) {
+      transcriptEl.classList.remove('hidden');
+      arrow.textContent = '▲';
+    } else {
+      transcriptEl.classList.add('hidden');
+      arrow.textContent = '▼';
+    }
+  }
+
+  function generateWaveformBars() {
+    let bars = '';
+    for (let i = 0; i < 30; i++) {
+      const height = Math.random() * 30 + 10;
+      bars += `<div class="audio-waveform-bar" style="height: ${height}px;"></div>`;
+    }
+    return bars;
+  }
+
+  window.toggleAudioPlayback = function(btn, audioSrc) {
+    const isPlaying = btn.classList.contains('playing');
+    const allAudioBtns = document.querySelectorAll('.audio-play-btn');
+    
+    // Stop all other playing audio
+    allAudioBtns.forEach(b => {
+      if (b !== btn && b.classList.contains('playing')) {
+        b.classList.remove('playing');
+        b.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>';
+        if (b.audioElement) {
+          b.audioElement.pause();
+          b.audioElement.currentTime = 0;
+        }
+      }
+    });
+
+    if (isPlaying) {
+      btn.classList.remove('playing');
+      btn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>';
+      if (btn.audioElement) {
+        btn.audioElement.pause();
+      }
+    } else {
+      btn.classList.add('playing');
+      btn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>';
+      
+      if (!btn.audioElement) {
+        btn.audioElement = new Audio(audioSrc);
+      }
+      
+      btn.audioElement.play();
+      btn.audioElement.onended = () => {
+        btn.classList.remove('playing');
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>';
+      };
+
+      // Animate waveform bars
+      const waveformContainer = btn.closest('.audio-message-bubble').querySelector('.audio-waveform-container');
+      const bars = waveformContainer.querySelectorAll('.audio-waveform-bar');
+      const waveformAnimation = setInterval(() => {
+        if (!btn.classList.contains('playing')) {
+          clearInterval(waveformAnimation);
+          return;
+        }
+        bars.forEach(bar => {
+          const newHeight = Math.random() * 30 + 10;
+          bar.style.height = `${newHeight}px`;
+        });
+      }, 100);
+    }
+  };
 
   document.querySelector('.photo-btn').addEventListener('click', () => {
     console.log('Photo option selected');
@@ -7093,26 +7857,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Helper function to truncate text for preview
+  // Helper function to truncate text for preview (preserves HTML)
   function truncateText(text, maxLength = 50) {
-    if (text.length <= maxLength) return text;
+    // Create a temporary div to parse HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = text;
+    
+    // Get text content length without HTML tags
+    const textContent = tempDiv.textContent || tempDiv.innerText || '';
+    
+    if (textContent.length <= maxLength) return text;
+    
+    // If text is too long, truncate the text content but preserve structure
+    // For simplicity, just return the original HTML if it contains images
+    if (text.includes('<img')) return text;
+    
+    // Otherwise truncate as before
     return text.substring(0, maxLength) + '...';
   }
 
   // Send message
   async function sendMessage() {
-    const message = chatInput.value.trim();
+    const message = chatInput.innerHTML.trim();
     console.log('sendMessage called, editingMessage:', editingMessage, 'message:', message);
+
+    // Prevent sending empty messages or messages with only <br>
+    if (!message || message === '<br>' || message === '') {
+      return;
+    }
 
     if (message) {
       // Handle editing existing message
       if (editingMessage) {
         console.log('Editing message, current editingMessage:', editingMessage);
         const messageContentText = editingMessage.querySelector('.message-content-text');
-        const oldMessage = messageContentText.textContent;
+        const oldMessage = messageContentText.innerHTML;
 
         if (messageContentText) {
-          messageContentText.textContent = message;
+          messageContentText.innerHTML = message;
         }
 
         // Add edited indicator if not already present (in metadata container)
@@ -7157,14 +7939,14 @@ document.addEventListener('DOMContentLoaded', () => {
           replyingTo = message;
           const replyText = replyPreview.querySelector('.reply-text');
           if (replyText) {
-            replyText.textContent = truncateText(message);
+            replyText.innerHTML = truncateText(message);
           }
         }
 
         // Clear editing state
         editingMessage = null;
         editPreview.classList.add('hidden');
-        chatInput.value = '';
+        chatInput.innerHTML = '';
         chatInput.dispatchEvent(new Event('input'));
 
         // Generate new response for the edited message
@@ -7430,7 +8212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         addSwipeToReply(messageWrapper);
       }
 
-      chatInput.value = '';
+      chatInput.innerHTML = '';
       chatInput.dispatchEvent(new Event('input'));
       chatInput.focus();
       chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -7523,7 +8305,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   chatInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-      sendMessage();
+      // Only send if input has content
+      const hasContent = chatInput.innerHTML.trim().length > 0 && chatInput.innerHTML.trim() !== '<br>';
+      if (hasContent) {
+        sendMessage();
+      }
     } else {
       // Play typing sound on keypress (except Enter)
       playTypingSound();
@@ -7539,7 +8325,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle send button and plus button visibility based on input
   chatInput.addEventListener('input', () => {
-    if (chatInput.value.trim().length > 0) {
+    const hasContent = chatInput.innerHTML.trim().length > 0 && chatInput.innerHTML.trim() !== '<br>';
+    if (hasContent) {
       sendChatBtn.classList.add('visible');
       plusBtn.classList.add('hidden');
     } else {
@@ -7549,7 +8336,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initialize button visibility on page load
-  if (chatInput.value.trim().length > 0) {
+  const hasContent = chatInput.innerHTML.trim().length > 0 && chatInput.innerHTML.trim() !== '<br>';
+  if (hasContent) {
     sendChatBtn.classList.add('visible');
     plusBtn.classList.add('hidden');
   } else {
@@ -7582,96 +8370,190 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const emojiCategories = {
-    emojis: {
-      name: 'Emojis',
+    red: {
+      name: 'Red',
+      color: '#e68bbe',
+      emojis: ["https://i.imgur.com/JArUfPy.gif","https://i.imgur.com/DkfTC8n.gif","https://i.imgur.com/kuohCUc.gif","https://i.imgur.com/dMTb9Pg.gif","https://i.imgur.com/5cOAwmY.gif","https://i.imgur.com/ULvKShM.gif","https://i.imgur.com/psDkmKE.gif","https://i.imgur.com/OqjE6JS.gif","https://i.imgur.com/DMnDy0e.gif","https://i.imgur.com/kzL6InH.gif","https://i.imgur.com/HHrYb55.gif","https://i.imgur.com/Xobm80F.gif","https://i.imgur.com/9lEAkqs.gif","https://i.imgur.com/gNpbuhJ.gif","https://i.imgur.com/jFw7GNJ.gif","https://i.imgur.com/IPjcfXp.gif","https://i.imgur.com/hHC0ist.gif","https://i.imgur.com/TnYhCEq.gif","https://i.imgur.com/GuRWAmJ.gif","https://i.imgur.com/PQ2LNaY.gif","https://i.imgur.com/mCrdZyZ.gif","https://i.imgur.com/wG6vYte.gif","https://i.imgur.com/1ck4lpQ.gif","https://i.imgur.com/ldrxmTy.gif","https://i.imgur.com/3QOVReY.gif","https://i.imgur.com/j3rPahr.gif","https://i.imgur.com/LC5NEbU.gif","https://i.imgur.com/BBHuL5W.gif","https://i.imgur.com/7Rgsi4N.gif","https://i.imgur.com/S4mtOo0.gif","https://i.imgur.com/iqqadQC.gif","https://i.imgur.com/29Exzh4.gif","https://i.imgur.com/xQ9XN9p.gif","https://i.imgur.com/EuzZHVv.gif","https://i.imgur.com/g2L36xy.gif","https://i.imgur.com/ereXGpx.gif","https://i.imgur.com/lAiTlqk.gif","https://i.imgur.com/aPGTMCE.gif","https://i.imgur.com/vVkFV4J.gif","https://i.imgur.com/02KxL7R.gif","https://i.imgur.com/Yhh862P.gif","https://i.imgur.com/CrBFvJR.gif","https://i.imgur.com/KGXol9G.gif","https://i.imgur.com/xrUm99G.gif","https://i.imgur.com/T5VsVSH.gif","https://i.imgur.com/dOqkrZt.gif","https://i.imgur.com/nFlb7Fi.gif","https://i.imgur.com/cPN2UZL.gif","https://i.imgur.com/3Wrb5wA.png","https://i.imgur.com/pMYCV90.gif","https://i.imgur.com/nVIKSPL.gif","https://i.imgur.com/ZSH1Kxw.gif","https://i.imgur.com/SlP7LB0.gif","https://i.imgur.com/U5q3dn4.gif","https://i.imgur.com/MpRDwZw.gif","https://i.imgur.com/aFgp5Aq.gif","https://i.imgur.com/Fzu5D90.gif","https://i.imgur.com/zw8H3RD.gif"]
+    },
+    orange: {
+      name: 'Orange',
       color: '#eea1cd',
-      sections: [
-        {
-          title: 'Red',
-          emojis: ['❤️', '🔴', '🍎', '🌹', '🍓', '🦩', '💄', '🎈', '🧣', '🔺', '🩸', '🧧', '🍒', '🦐', '🥫', '🚗', '🛑', '♥️', '💋', '👠', '🩰', '🥊', '🏓', '🦞', '🌶️', '🍅', '🔻', '📕', '🎒', '🚒', '🧯', '🚨', '🧸', '🧣', '🪸', '🥩', '🍷', '🥤', '🎟️', '🧨', '🧬', '🧫', '🩹', '🩺', '👛', '👜', '🌹', '🥀', '🌺', '🍎', '🖍️', '🛒', '🧰', '🔩', '🧲', '🧨', '🧯', '🛑', '🟥']
-        },
-        {
-          title: 'Orange',
-          emojis: ['🧡', '🟠', '🍊', '🥕', '🎃', '🍁', '🦧', '🔸', '🍑', '🧤', '🦊', '🍂', '⚠️', '🍠', '🥭', '🦁', '🟧', '🚚', '🪔', '🧅', '🏀', '🔶', '🧡', '🥨', '🏵️', '🎐', '🦀', '🍤', '🦞', '🧡', '🧡', '🥕', '🍂', '🔸', '🪔', '🍑', '🏀', '🎃', '🧡', '🧡']
-        },
-        {
-          title: 'Yellow',
-          emojis: ['💛', '🟡', '🌟', '🌻', '🍋', '🐝', '🐤', '🌽', '🧀', '🚕', '🔆', '🧽', '🐥', '🍯', '⭐', '🌞', '🐝', '🌼', '🍌', '🧈', '🟨', '📒', '🧸', '🚖', '🚌', '🏀', '🎗️', '🧹', '🌕', '🌙', '🪐', '🔑', '🧀', '🍯', '🍬', '🧈', '🌽', '🥚', '🧽', '🟡', '💛', '🪙', '🏆', '🥇', '✨', '⚜️', '🔶', '🔅', '🌟']
-        },
-        {
-          title: 'Green',
-          emojis: ['💚', '🟢', '🍀', '🌿', '🐢', '🥑', '🍏', '🥝', '🧩', '🍃', '🌲', '🐸', '🥦', '🐉', '🧪', '🥒', '🥬', '🫒', '🐊', '🦎', '🐛', '🌵', '🍐', '🍈', '🚙', '🧤', '🧼', '🛢️', '🟩', '📗', '♻️', '🐲', '🌱', '🌾', '☘️', '🍃', '🌿', '🥬', '🫑', '🍏', '🥑', '🍐', '🥝']
-        },
-        {
-          title: 'Pink',
-          emojis: ['💗', '🩷', '🌸', '🌷', '🌹', '💐', '🎀', '🦩', '🌺', '🏵️', '🌼', '🦄', '💕', '💖', '💝', '💘', '❤️', '🩷', '🎀', '🌸', '🌷', '🌹', '💐', '🦩', '🌺', '🏵️', '🌼', '🦄', '💕', '💖', '💝', '💘', '❤️', '🩷', '🎀', '🌸', '🌷', '🌹', '💐', '🦩', '🌺', '🏵️', '🌼']
-        },
-        {
-          title: 'Purple',
-          emojis: ['💜', '🟣', '🍆', '☂️', '🦄', '🔮', '🧞', '🍇', '🧬', '🎆', '👾', '🟪', '🧁', '🧙', '🧞♂️', '🧞♀️', '🦄', '🍇', '🎆', '👾', '🔮', '🔯', '☂️', '🧪', '🧬', '🧫', '🧴', '🧹', '🧙', '🧚', '🧛', '🧝', '🧞', '🍆', '🟣', '💜', '🔮', '🪄', '🌂', '🎆']
-        },
-        {
-          title: 'Brown',
-          emojis: ['🤎', '🟤', '🐻', '🥜', '🧸', '🪵', '☕', '🍂', '🦌', '🐪', '🍪', '🧦', '🧉', '👜', '🦫', '🦦', '🐕', '🐩', '🐶', '🪑', '🪵', '🧺', '🥔', '🥜', '🥮', '🍪', '☕', '🧉', '🧸', '👜', '🧦', '🍂', '🌰', '🐿️', '🦌', '🐻', '🐪']
-        },
-        {
-          title: 'Black',
-          emojis: ['🖤', '⚫', '🖤', '♠️', '🎹', '🥼', '⚰️', '🦷', '🦴', '🐚', '🪨', '🏔️', '🗻', '🗿', '🐼', '🐧', '🦓', '🏁', '♟️', '⌛', '⚰️', '🏴', '🖤', '🖤', '♣️', '🕋', '🐈‍⬛', '🦅', '🐦‍⬛', '🐺', '🦍']
-        },
-        {
-          title: 'White',
-          emojis: ['⚪', '🤍', '🐻‍❄️', '🕊️', '☁️', '⛄', '🧻', '🧴', '🧼', '🧽', '🥛', '🐚', '🦢', '🐩', '🐏', '⚪', '🤍', '🥼', '🧖‍♀️', '🧖', '🧖‍♂️', '🦷', '🧴', '🧻', '☁️', '⚪', '🤍']
-        },
-        {
-          title: 'Gray',
-          emojis: ['🩶', '🐘', '🐺', '🐁', '🐭', '🐀', '🪨', '🏔️', '🏗️', '🚧', '🛢️', '🚁', '✈️', '🛸', '🚀', '🛰️', '🧷', '🧸', '🧦', '🩶', '🧵', '🧶', '🎛️', '🕹️', '🖱️', '💾', '🖨️', '⌨️', '🖥️', '🖲️']
-        },
-        {
-          title: 'Teal',
-          emojis: ['🩵', '💠', '🔷', '🥏', '🧼', '🧊', '🥶', '🐟', '🐬', '🦋', '🪁', '🔹', '🔷', '🩵', '💙', '🧼', '🧊', '🥏', '🌊', '🐟', '🐬', '🦋', '🧪', '🔷', '🟦']
-        },
-        {
-          title: 'Lavender',
-          emojis: ['🟣', '💜', '🪻', '☂️', '🦄', '🔮', '🧬', '🎆', '👾', '🧁', '🧙', '🧚', '🧞', '🧛', '🧝', '🧹', '🧴', '🪄', '🔮', '🟣', '💜', '🪻']
-        },
-        {
-          title: 'Rainbow',
-          emojis: ['🌈', '🏳️‍🌈', '🎨', '🖌️', '🖍️', '🎭', '🪄', '✨', '💫', '🎆', '🎇', '🌟', '🌈', '☯️', '🕉️', '🔮', '💎', '🪸', '🦚', '🦜', '🎨']
-        },
-        {
-          title: 'Pastel',
-          emojis: ['🌸', '🎀', '🧁', '🍰', '🧸', '🫧', '🍬', '🍭', '🐇', '🐣', '🐥', '🌸', '🐚', '🕊️', '🧖‍♀️', '🧘', '☁️', '🌈', '🎐', '🫧', '🎀']
-        },
-        {
-          title: 'Dark',
-          emojis: ['🌑', '🖤', '⚫', '🌚', '🏴', '🕷️', '🕸️', '🦇', '🌌', '🧙', '🧛', '🧟', '🧝', '🧞', '🧚', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘', '🌑']
-        },
-        {
-          title: 'Metallic',
-          emojis: ['🏆', '🥇', '🥈', '🥉', '🪙', '💎', '✨', '💫', '⭐', '🌟', '🪄', '🔮', '🔱', '🛡️', '⚔️', '🏅', '🎖️', '🪙', '💍', '👑', '💎']
-        },
-        {
-          title: 'Smiles',
-          emojis: ['😊', '😍', '😘', '😗', '😙', '😚', '🥰', '😻', '👼', '🤗', '🫶', '😇', '🥲', '☺️', '😌', '😊', '😁', '😄', '😅', '😆', '🤣', '😂', '🥹', '😉', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤪', '😜', '😛', '😝', '🤑', '🤡', '👻', '🤖', '🎃', '😈', '👿', '🤠', '🥳', '😎', '🤓', '🧐', '👓', '🕶️', '😭', '😢', '😥', '😰', '😨', '😧', '😦', '😮', '😯', '😲', '😕', '😟', '🙁', '☹️', '😖', '😣', '😞', '😓', '😩', '😫', '😤', '😡', '😠', '🤬', '🥺', '😔', '🫥', '😱', '😨', '😰', '😧', '😦', '😮', '😯', '😲', '😳', '🤯', '😬', '🥴', '😵', '😵‍💫', '🤢', '🤮', '🤧', '🤒', '🤕', '😷', '😴', '💤', '🤤', '🥱', '🤒', '🤕', '🤢', '🤮', '🤧', '😷', '🥵', '🥶', '😈', '👿', '💀', '☠️', '👹', '👺', '👾', '🤖', '🧛', '🧟', '🧙', '🧝', '🧚', '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🙈', '🙉', '🙊', '🐒', '🐔', '🐧', '🐦', '🐤', '🐣', '🐥', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '👋', '🤚', '🖐️', '✋', '🖖', '👌', '🤌', '🤏', '✌️', '🤞', '🫰', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '🫵', '👍', '👎', '✊', '👊', '🤛', '🤜', '🤝', '🫱', '🫲', '🫳', '🫴', '🫶', '👐', '🤲', '🙌', '🙏', '🦶', '🦷', '🧠', '💪', '🦾', '🦵', '🦿']
-        }
-      ]
+      emojis: ["https://i.imgur.com/jceFQcp.gif","https://i.imgur.com/wx2JGFu.gif","https://i.imgur.com/AdI3kcM.gif","https://i.imgur.com/xJWgqMJ.gif","https://i.imgur.com/BrImWMD.gif","https://i.imgur.com/4aENkot.gif","https://i.imgur.com/MNU4KWp.gif","https://i.imgur.com/LtJ0hgj.gif","https://i.imgur.com/nDDxXAA.gif","https://i.imgur.com/QgRQ9du.gif","https://i.imgur.com/JOx0Vy2.gif","https://i.imgur.com/LpNUOkZ.gif","https://i.imgur.com/7TQpyve.gif","https://i.imgur.com/gtNEwBi.gif","https://i.imgur.com/MiGBC3F.gif","https://i.imgur.com/y7JS1Bw.gif","https://i.imgur.com/ln5OMt0.gif","https://i.imgur.com/VsATGBb.gif","https://i.imgur.com/81N5Pab.gif","https://i.imgur.com/7ZX9zPs.gif","https://i.imgur.com/n7mYwL8.gif","https://i.imgur.com/I5aQsMy.gif","https://i.imgur.com/Pgjvobq.gif","https://i.imgur.com/Vthsb96.gif","https://i.imgur.com/oLeLMNd.gif","https://i.imgur.com/IGxxD2W.gif","https://i.imgur.com/2XLpPXq.gif","https://i.imgur.com/rmbNqSV.gif","https://i.imgur.com/nzPhwZk.gif","https://i.imgur.com/cgFHl8P.gif","https://i.imgur.com/Oc0wOU2.gif","https://i.imgur.com/WtELfxA.gif","https://i.imgur.com/MtaZgDK.gif","https://i.imgur.com/2Xif419.jpg","https://i.imgur.com/jfbXbLu.gif","https://i.imgur.com/e0xDq1U.gif","https://i.imgur.com/gmXDKbu.gif","https://i.imgur.com/lDs9tqm.gif","https://i.imgur.com/Shdxv5Z.gif","https://i.imgur.com/h0BvMG4.gif","https://i.imgur.com/71GzySL.gif","https://i.imgur.com/ylXsnQ8.gif","https://i.imgur.com/ceZZYM8.gif","https://i.imgur.com/PlLoSEc.gif","https://i.imgur.com/pgrUOY3.gif","https://i.imgur.com/lJF5F1A.gif","https://i.imgur.com/bN0XEgP.gif","https://i.imgur.com/StsWL2f.gif","https://i.imgur.com/H4w3DSt.gif","https://i.imgur.com/IVu1760.gif","https://i.imgur.com/KXICOIV.gif","https://i.imgur.com/k7O8OiU.gif","https://i.imgur.com/FUTNnwV.gif","https://i.imgur.com/tFCecpe.gif","https://i.imgur.com/GOF76KG.gif","https://i.imgur.com/AANuOfI.gif","https://i.imgur.com/I8ctwZC.gif","https://i.imgur.com/sITUANc.gif"]
+    },
+    yellow: {
+      name: 'Yellow',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/yRDUz1y.gif","https://i.imgur.com/dWSTAJz.gif","https://i.imgur.com/WqnY7hM.gif","https://i.imgur.com/U5GYPcC.gif","https://i.imgur.com/hcrJMnb.gif","https://i.imgur.com/QLaQiUG.gif","https://i.imgur.com/PSPPuEl.gif","https://i.imgur.com/INhNnL6.gif","https://i.imgur.com/Xi3VLB9.gif","https://i.imgur.com/pEic4vl.gif","https://i.imgur.com/8c8QA1L.gif","https://i.imgur.com/ycDHo67.gif","https://i.imgur.com/xO0HSGL.gif","https://i.imgur.com/N0kU6U1.gif","https://i.imgur.com/S9HxVnI.gif","https://i.imgur.com/N9sW7Pi.gif","https://i.imgur.com/Rjso7xb.gif","https://i.imgur.com/OkhAra5.gif","https://i.imgur.com/THC6eGL.gif","https://i.imgur.com/xDAnIky.gif","https://i.imgur.com/QMoTBf1.gif","https://i.imgur.com/nk2Fa9l.gif","https://i.imgur.com/qOGOqSE.gif","https://i.imgur.com/MqiXvqh.gif","https://i.imgur.com/ny4dOSg.gif","https://i.imgur.com/lTiejN5.gif","https://i.imgur.com/lb8PDaF.gif","https://i.imgur.com/MrsGKuR.gif","https://i.imgur.com/auH3al7.gif","https://i.imgur.com/ldT74RA.gif","https://i.imgur.com/bjCtDTC.gif","https://i.imgur.com/o9c1kAD.gif","https://i.imgur.com/lKK2ai8.gif","https://i.imgur.com/2rLxyXH.gif","https://i.imgur.com/AtotDYt.gif","https://i.imgur.com/QMTPK3L.gif","https://i.imgur.com/t6m8p9V.gif","https://i.imgur.com/oRH9qhT.gif","https://i.imgur.com/rawVpLV.gif","https://i.imgur.com/gJ8fHwo.gif","https://i.imgur.com/gNpMHdf.gif","https://i.imgur.com/AqRZh88.gif","https://i.imgur.com/Ariwp8I.gif","https://i.imgur.com/93nOZIL.gif","https://i.imgur.com/IcEIrcG.gif","https://i.imgur.com/JQV5Iim.gif","https://i.imgur.com/wMKsuya.gif","https://i.imgur.com/4WLxpN2.gif","https://i.imgur.com/0ERgJWM.gif","https://i.imgur.com/IBwrbUJ.gif","https://i.imgur.com/vRlH4iK.gif","https://i.imgur.com/7dhP7QU.gif","https://i.imgur.com/Nao7hgH.gif","https://i.imgur.com/IaXZTbF.gif","https://i.imgur.com/sFs1C44.gif","https://i.imgur.com/YBJLpby.gif","https://i.imgur.com/Tsez9cF.gif","https://i.imgur.com/Wnzhhhl.gif"]
+    },
+    green: {
+      name: 'Green',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/91js5YE.gif","https://i.imgur.com/o2Ttdae.gif","https://i.imgur.com/Ovvv1mD.gif","https://i.imgur.com/UY6ESkd.gif","https://i.imgur.com/HuE34Sm.gif","https://i.imgur.com/GqxVO8I.gif","https://i.imgur.com/pUmvt6x.gif","https://i.imgur.com/WTE8hFz.gif","https://i.imgur.com/OWAldPY.gif","https://i.imgur.com/wTQX5W5.gif","https://i.imgur.com/jFNPvSG.gif","https://i.imgur.com/IpF1mAN.gif","https://i.imgur.com/xBw4Idv.gif","https://i.imgur.com/yWonR9c.gif","https://i.imgur.com/l9k1vFZ.gif","https://i.imgur.com/nlWzMcb.gif","https://i.imgur.com/LQWNddq.gif","https://i.imgur.com/ZwTWzPS.gif","https://i.imgur.com/nkY3SDz.gif","https://i.imgur.com/tOPAapX.gif","https://i.imgur.com/3b9D3ii.gif","https://i.imgur.com/CkOmGbj.gif","https://i.imgur.com/AA9ktmV.gif","https://i.imgur.com/7iRxBeX.gif","https://i.imgur.com/zMNHH1Z.gif","https://i.imgur.com/8Fy2w7J.gif","https://i.imgur.com/lTgg6i9.gif","https://i.imgur.com/5u9OYL0.gif","https://i.imgur.com/MuX7Ldb.gif","https://i.imgur.com/Ey2e4LZ.gif","https://i.imgur.com/YWaggYb.gif","https://i.imgur.com/oyH5iI5.gif","https://i.imgur.com/2J7jOx2.gif","https://i.imgur.com/auW2bxt.gif","https://i.imgur.com/wTwYx5M.gif","https://i.imgur.com/eMXf2PN.gif","https://i.imgur.com/IH68Dk9.gif","https://i.imgur.com/UmzwXZA.gif","https://i.imgur.com/HWqWamo.gif","https://i.imgur.com/kuG0Y95.gif","https://i.imgur.com/wg0gP2W.gif","https://i.imgur.com/2PL4rkO.gif","https://i.imgur.com/gc0f7do.gif","https://i.imgur.com/YyXK511.gif","https://i.imgur.com/4fRSD7f.gif","https://i.imgur.com/8kvEI5R.gif","https://i.imgur.com/u8eMYtA.gif","https://i.imgur.com/DcZpGA9.gif","https://i.imgur.com/Di2NBc0.gif","https://i.imgur.com/ibwyEER.gif","https://i.imgur.com/wpZ4hT2.gif","https://i.imgur.com/iM62oqD.gif","https://i.imgur.com/dnQ2S5a.gif","https://i.imgur.com/tHcASok.gif","https://i.imgur.com/0PzYYXi.gif","https://i.imgur.com/rWqhuPJ.gif","https://i.imgur.com/4nQkVuB.gif","https://i.imgur.com/so6KDft.gif"]
+    },
+    pink: {
+      name: 'Pink',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/X0ItEsQ.gif","https://i.imgur.com/huvDiXV.gif","https://i.imgur.com/y62jLC0.gif","https://i.imgur.com/JEl4Usp.gif","https://i.imgur.com/2Vb8KLJ.gif","https://i.imgur.com/m3kMcS9.gif","https://i.imgur.com/W1qVRq7.gif","https://i.imgur.com/8wSTACM.gif","https://i.imgur.com/PsLtqMJ.gif","https://i.imgur.com/npme8Dn.gif","https://i.imgur.com/7uZdfcN.gif","https://i.imgur.com/Bqbxbro.gif","https://i.imgur.com/XdxlzWf.gif","https://i.imgur.com/kdc0tIY.gif","https://i.imgur.com/yaJFjhq.gif","https://i.imgur.com/YaSc2dQ.gif","https://i.imgur.com/f68iHcF.gif","https://i.imgur.com/uPAAd5d.gif","https://i.imgur.com/voCExlJ.gif","https://i.imgur.com/JWqpJj6.gif","https://i.imgur.com/qyDkStE.gif","https://i.imgur.com/oCRKW4b.gif","https://i.imgur.com/rVdqHse.gif","https://i.imgur.com/t4nvAzF.gif","https://i.imgur.com/eUNYj3q.gif","https://i.imgur.com/jStCzuL.gif","https://i.imgur.com/3hOWxw1.gif","https://i.imgur.com/2nxcH9b.gif","https://i.imgur.com/SBJlO7F.gif","https://i.imgur.com/CcD8ks3.gif","https://i.imgur.com/B33c1RI.gif","https://i.imgur.com/ffu9e7N.gif","https://i.imgur.com/lxvkbj9.gif","https://i.imgur.com/IRYsxDl.gif","https://i.imgur.com/yoVPQnZ.gif","https://i.imgur.com/0K2VfU1.gif","https://i.imgur.com/A7cLpvn.gif","https://i.imgur.com/zS1o0EG.gif","https://i.imgur.com/3S3rWPS.gif","https://i.imgur.com/1jiV69g.gif","https://i.imgur.com/UUQ08vN.gif","https://i.imgur.com/Qt6ELUL.gif","https://i.imgur.com/i1VUGWT.gif","https://i.imgur.com/ZKogrD1.gif","https://i.imgur.com/W1arURT.gif","https://i.imgur.com/UDGs0yu.jpg","https://i.imgur.com/zsEpch4.gif","https://i.imgur.com/GZsMGHp.gif","https://i.imgur.com/EE5iE9L.gif","https://i.imgur.com/zKCKtXl.gif","https://i.imgur.com/btuz7QW.gif","https://i.imgur.com/HvQECqc.gif","https://i.imgur.com/Bk80xI7.gif","https://i.imgur.com/6rq0dgC.gif","https://i.imgur.com/0hnDWiH.gif","https://i.imgur.com/ENZYFw5.gif","https://i.imgur.com/h0BEEkP.gif","https://i.imgur.com/smoACtO.gif"]
+    },
+    purple: {
+      name: 'Purple',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/zA1SRiZ.gif","https://i.imgur.com/oUPPDvY.gif","https://i.imgur.com/kkR5yUe.gif","https://i.imgur.com/GUZIMPA.gif","https://i.imgur.com/FXlCH7N.gif","https://i.imgur.com/1eb2rFZ.gif","https://i.imgur.com/2LYJMa0.gif","https://i.imgur.com/wQHvHFT.gif","https://i.imgur.com/YBBhm5c.gif","https://i.imgur.com/UvUJqrQ.gif","https://i.imgur.com/j2eUmgz.gif","https://i.imgur.com/SPRqs6S.gif","https://i.imgur.com/5C6Sf80.gif","https://i.imgur.com/Apf4RHv.gif","https://i.imgur.com/Qzx6BZx.gif","https://i.imgur.com/MGoTq1u.gif","https://i.imgur.com/PjHsEP2.gif","https://i.imgur.com/ONjWpel.gif","https://i.imgur.com/VG0nKO5.gif","https://i.imgur.com/cWJLMai.gif","https://i.imgur.com/ZWXQCYW.gif","https://i.imgur.com/MPiJFtF.gif","https://i.imgur.com/3nW35R2.gif","https://i.imgur.com/2guHWcf.gif","https://i.imgur.com/QNKjknR.gif","https://i.imgur.com/nAC5vAx.gif","https://i.imgur.com/cW3Ttl7.gif","https://i.imgur.com/pdXTg91.gif","https://i.imgur.com/YLbXDKm.gif","https://i.imgur.com/6D71rk6.gif","https://i.imgur.com/0ANPXMt.gif","https://i.imgur.com/Y9UPtfr.gif","https://i.imgur.com/Bi5A7sk.gif","https://i.imgur.com/SGOZvBZ.gif","https://i.imgur.com/cNiu7mr.gif","https://i.imgur.com/0S24tm3.gif","https://i.imgur.com/8o9NuJD.gif","https://i.imgur.com/lRR1Obe.gif","https://i.imgur.com/PWbltem.gif","https://i.imgur.com/9eQTqtf.gif","https://i.imgur.com/SeFUmG7.gif","https://i.imgur.com/Dq2UARX.gif","https://i.imgur.com/Ww6hevr.gif","https://i.imgur.com/PhogWSW.gif","https://i.imgur.com/TyUbEjh.gif","https://i.imgur.com/qQBThCC.gif","https://i.imgur.com/B0IdpCo.gif","https://i.imgur.com/vl5elgZ.gif","https://i.imgur.com/vtJuFuQ.gif","https://i.imgur.com/ow1WgDR.gif","https://i.imgur.com/R13xEPa.gif","https://i.imgur.com/5oGJ3ve.gif","https://i.imgur.com/WxMhrPY.gif","https://i.imgur.com/svYnaO8.gif","https://i.imgur.com/urlj7t0.gif","https://i.imgur.com/uM6Rf7Q.gif","https://i.imgur.com/dczKhZp.gif","https://i.imgur.com/ySo9zmP.gif"]
+    },
+    brown: {
+      name: 'Brown',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/SiTAbpL.gif","https://i.imgur.com/AeWQpBn.gif","https://i.imgur.com/geMgiRl.gif","https://i.imgur.com/Rcazy05.gif","https://i.imgur.com/abQPK7k.gif","https://i.imgur.com/SfQgTOc.gif","https://i.imgur.com/4FOmY9X.gif","https://i.imgur.com/Va634T0.gif","https://i.imgur.com/jIp52yL.gif","https://i.imgur.com/MvpGsJF.gif","https://i.imgur.com/HWd2e55.gif","https://i.imgur.com/POeRgVs.gif","https://i.imgur.com/2egWN64.gif","https://i.imgur.com/CSLLJ5N.gif","https://i.imgur.com/Q97Bg6M.gif","https://i.imgur.com/ZJMY3AD.gif","https://i.imgur.com/oquM72Z.gif","https://i.imgur.com/mVWU5KS.gif","https://i.imgur.com/UtbMVG8.gif","https://i.imgur.com/kbpfsrJ.gif","https://i.imgur.com/rTUCwIL.gif","https://i.imgur.com/7KfQSI0.gif","https://i.imgur.com/5YBxZ4z.gif","https://i.imgur.com/5ip4hYb.gif","https://i.imgur.com/rRy3t2v.gif","https://i.imgur.com/qdbKB5D.gif","https://i.imgur.com/VtBQCTU.gif","https://i.imgur.com/DI53ACe.gif","https://i.imgur.com/N5nGLhA.gif","https://i.imgur.com/fQ5FbLV.gif","https://i.imgur.com/PPwxxEk.gif","https://i.imgur.com/6VlAH5D.gif","https://i.imgur.com/V4mjYKz.gif","https://i.imgur.com/gDz4a1Y.gif","https://i.imgur.com/GNzRWIz.gif","https://i.imgur.com/5F4692x.gif","https://i.imgur.com/YMViaJ6.gif","https://i.imgur.com/bguXl5P.gif","https://i.imgur.com/cii3oNe.gif","https://i.imgur.com/IvdeINr.gif","https://i.imgur.com/MMT1qzc.gif","https://i.imgur.com/rPX4nLO.gif","https://i.imgur.com/lGet220.gif","https://i.imgur.com/uOujEL9.gif","https://i.imgur.com/7sepZvS.gif","https://i.imgur.com/Tlaixo3.gif","https://i.imgur.com/qLiJqCc.gif","https://i.imgur.com/Rlynlbd.gif","https://i.imgur.com/LMWKEjE.gif","https://i.imgur.com/fu8d4TL.gif","https://i.imgur.com/d6RkCZn.gif","https://i.imgur.com/PSbXAEp.jpg","https://i.imgur.com/nnNG01i.gif","https://i.imgur.com/gefKepO.gif","https://i.imgur.com/1uyRDlU.gif","https://i.imgur.com/Gque7rT.gif","https://i.imgur.com/diPH0w4.gif","https://i.imgur.com/fq9sK03.gif"]
+    },
+    black: {
+      name: 'Black',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/uNZsTVp.gif","https://i.imgur.com/2PHGW3Y.gif","https://i.imgur.com/b5VzXhe.gif","https://i.imgur.com/tjmVGJI.gif","https://i.imgur.com/1PobLOC.gif","https://i.imgur.com/skLrVYH.gif","https://i.imgur.com/jVfwKHj.gif","https://i.imgur.com/MxLqNEC.gif","https://i.imgur.com/Q2T4gJZ.gif","https://i.imgur.com/1ueeyMd.gif","https://i.imgur.com/bwoBue9.gif","https://i.imgur.com/hki6WZI.gif","https://i.imgur.com/eSugb3r.gif","https://i.imgur.com/oOdpSr4.gif","https://i.imgur.com/AvqoqOS.gif","https://i.imgur.com/DJXfEnA.gif","https://i.imgur.com/Sb4Iv24.gif","https://i.imgur.com/wxxgyL1.gif","https://i.imgur.com/YtxDXEJ.gif","https://i.imgur.com/yEJ1FeA.gif","https://i.imgur.com/VNytDtR.gif","https://i.imgur.com/lqzypl0.gif","https://i.imgur.com/MBXRMWM.gif","https://i.imgur.com/GV1bzW6.gif","https://i.imgur.com/S89ceBR.gif","https://i.imgur.com/OLnUL5v.gif","https://i.imgur.com/iyJBeIW.gif","https://i.imgur.com/REd4c2k.gif","https://i.imgur.com/bHN3mnY.gif","https://i.imgur.com/tMrI9Tz.gif","https://i.imgur.com/XttujV7.gif","https://i.imgur.com/lWdzF5J.gif","https://i.imgur.com/5fv4spr.gif","https://i.imgur.com/dqDJ53J.gif","https://i.imgur.com/4PA7Yla.gif","https://i.imgur.com/qGWUfsU.gif","https://i.imgur.com/h4of1mT.gif","https://i.imgur.com/SFCSlxa.gif","https://i.imgur.com/4kWMJ5w.gif","https://i.imgur.com/teY3p3k.gif","https://i.imgur.com/PvyecG6.gif","https://i.imgur.com/OZHyEiN.gif","https://i.imgur.com/CY9DCTI.gif","https://i.imgur.com/6sYfI5B.gif","https://i.imgur.com/BSN2lIc.gif","https://i.imgur.com/z1ewPrr.gif","https://i.imgur.com/dPOHfA9.jpg","https://i.imgur.com/WQhRmHY.gif","https://i.imgur.com/d9Vuez2.gif","https://i.imgur.com/r3bIifP.gif","https://i.imgur.com/DW2gQ4C.gif","https://i.imgur.com/xioTNMj.gif","https://i.imgur.com/UGfr4mO.gif","https://i.imgur.com/RQoCqNv.gif","https://i.imgur.com/ewAb0jG.gif","https://i.imgur.com/HxSRJPh.gif","https://i.imgur.com/XVHHE59.gif","https://i.imgur.com/15GbnX4.gif"]
+    },
+    gray: {
+      name: 'Gray',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/lYlQ70B.gif","https://i.imgur.com/oLjAxZX.gif","https://i.imgur.com/tcJHbBw.gif","https://i.imgur.com/UPM1bWV.gif","https://i.imgur.com/MLAlnRO.gif","https://i.imgur.com/JTGqd8r.gif","https://i.imgur.com/Oy3OGbW.gif","https://i.imgur.com/N8w1i2W.gif","https://i.imgur.com/4U6F1Yy.gif","https://i.imgur.com/j4qutGR.gif","https://i.imgur.com/sWUJGaP.gif","https://i.imgur.com/RFH8q27.gif","https://i.imgur.com/D0YJB9M.gif","https://i.imgur.com/8VwsMpy.gif","https://i.imgur.com/alvLHwl.gif","https://i.imgur.com/E8mQHBv.gif","https://i.imgur.com/yISkyoo.gif","https://i.imgur.com/8vxlRFI.gif","https://i.imgur.com/Qk5lQZi.gif","https://i.imgur.com/7jq8vL2.gif","https://i.imgur.com/x2p6Hwm.gif","https://i.imgur.com/oK1TzcK.gif","https://i.imgur.com/yrTZNE9.gif","https://i.imgur.com/yroB26i.gif","https://i.imgur.com/eDVrZZf.gif","https://i.imgur.com/7uQN695.gif","https://i.imgur.com/JqDKZYf.gif","https://i.imgur.com/q2wKfxF.gif","https://i.imgur.com/Id47pJv.gif","https://i.imgur.com/bamwARA.gif","https://i.imgur.com/GSV89Sq.gif","https://i.imgur.com/FQMLiLi.gif","https://i.imgur.com/j9zagtX.gif","https://i.imgur.com/lmX3CWF.gif","https://i.imgur.com/7SbaktE.jpg","https://i.imgur.com/JFJyDvW.gif","https://i.imgur.com/a8RA3bv.gif","https://i.imgur.com/goiBexo.gif","https://i.imgur.com/p1vvxzT.gif","https://i.imgur.com/S3oNsw7.gif","https://i.imgur.com/G4EdLgD.gif","https://i.imgur.com/jUZT0Xc.gif","https://i.imgur.com/ggzjFei.jpg","https://i.imgur.com/YxC23Iy.gif","https://i.imgur.com/kyrhA6B.gif","https://i.imgur.com/dgd9Xvy.gif","https://i.imgur.com/C75i3K5.gif","https://i.imgur.com/et5llyF.gif","https://i.imgur.com/ovaff5r.gif","https://i.imgur.com/Zhf2kU5.gif","https://i.imgur.com/jpEUdyz.gif","https://i.imgur.com/6BhRejY.gif","https://i.imgur.com/rziRpjc.gif","https://i.imgur.com/ojkfwb4.gif","https://i.imgur.com/SGEi3zy.gif","https://i.imgur.com/YKuSjPb.gif","https://i.imgur.com/wtWTvN6.gif","https://i.imgur.com/0mJ0glz.gif"]
+    },
+    white: {
+      name: 'White',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/US8KWIQ.gif","https://i.imgur.com/zcFh0SK.gif","https://i.imgur.com/M73pkEV.gif","https://i.imgur.com/Ym5OIF3.gif","https://i.imgur.com/WogsjfG.gif","https://i.imgur.com/7MrzBr7.gif","https://i.imgur.com/yJ1c3r4.gif","https://i.imgur.com/90ZnR4E.gif","https://i.imgur.com/RXM7S0r.gif","https://i.imgur.com/pZIb0M7.gif","https://i.imgur.com/JptjIrK.gif","https://i.imgur.com/34YQfnR.gif","https://i.imgur.com/DYHD2el.gif","https://i.imgur.com/g5kFQv1.gif","https://i.imgur.com/1eItpku.gif","https://i.imgur.com/v61s5KF.gif","https://i.imgur.com/YjIvuxO.gif","https://i.imgur.com/EVZKlSZ.gif","https://i.imgur.com/F16JSmP.gif","https://i.imgur.com/ahNtIvN.gif","https://i.imgur.com/BcWpYxM.gif","https://i.imgur.com/nLfSSjD.gif","https://i.imgur.com/3rvfxBE.gif","https://i.imgur.com/55A5xo1.gif","https://i.imgur.com/huuwROv.gif","https://i.imgur.com/tOZ4ieN.gif","https://i.imgur.com/tlitvk8.gif","https://i.imgur.com/1D2VdVh.gif","https://i.imgur.com/SgCI9AM.gif","https://i.imgur.com/dRJnBa6.gif","https://i.imgur.com/XjjtKXv.gif","https://i.imgur.com/ymr6Q78.gif","https://i.imgur.com/ut9XPLG.gif","https://i.imgur.com/OX6LFeG.gif","https://i.imgur.com/Gy8vN2v.gif","https://i.imgur.com/JlPTTpE.gif","https://i.imgur.com/TPNZhrS.gif","https://i.imgur.com/MtOSpAj.gif","https://i.imgur.com/swR8pLb.gif","https://i.imgur.com/a2wT8qP.gif","https://i.imgur.com/Olwt3AI.gif","https://i.imgur.com/1BS38SY.gif","https://i.imgur.com/BiG5wmA.gif","https://i.imgur.com/LxYd7PK.gif","https://i.imgur.com/DXtu21g.gif","https://i.imgur.com/cNRZAJf.gif","https://i.imgur.com/c0tC7D9.gif","https://i.imgur.com/f8bocrI.gif","https://i.imgur.com/xMwNhKI.gif","https://i.imgur.com/tm1TAHR.gif","https://i.imgur.com/oZ8MJDl.gif","https://i.imgur.com/1IBQp9p.gif","https://i.imgur.com/89INEjf.gif","https://i.imgur.com/bTLZGyD.gif","https://i.imgur.com/11cAPuy.gif","https://i.imgur.com/BAvoMZ7.gif","https://i.imgur.com/pfA3b9O.gif","https://i.imgur.com/hujzEVd.gif"]
+    },
+    rainbow: {
+      name: 'Rainbow',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/bUjCzA6.gif","https://i.imgur.com/6ZoyoRx.gif","https://i.imgur.com/xnGmRej.gif","https://i.imgur.com/dRAvOlQ.gif","https://i.imgur.com/A4VVGDZ.gif","https://i.imgur.com/poLgocC.gif","https://i.imgur.com/Io2aRsn.gif","https://i.imgur.com/AsPZHTV.gif","https://i.imgur.com/Y4I6PeA.gif","https://i.imgur.com/5Gnb5hl.gif","https://i.imgur.com/FaZjr3W.gif","https://i.imgur.com/cc7PRYK.gif","https://i.imgur.com/5p8T442.gif","https://i.imgur.com/m6swR97.gif","https://i.imgur.com/vn6pwRO.gif","https://i.imgur.com/eVdlwrb.gif","https://i.imgur.com/MvNhgzQ.gif","https://i.imgur.com/VlkK73c.gif","https://i.imgur.com/IGR73vW.gif","https://i.imgur.com/XhKOHPU.gif","https://i.imgur.com/Wl4cTrF.gif","https://i.imgur.com/FCbhnx2.gif","https://i.imgur.com/YRsfoXa.gif","https://i.imgur.com/V3LY4mN.gif","https://i.imgur.com/kqVLbIF.gif","https://i.imgur.com/vG8WziW.gif","https://i.imgur.com/1v3HjtI.gif","https://i.imgur.com/L1g2DzZ.gif","https://i.imgur.com/ZSJFAMy.gif","https://i.imgur.com/nkT4ZAK.gif","https://i.imgur.com/q5Y4XHd.gif","https://i.imgur.com/YGfhtlO.gif","https://i.imgur.com/X0dUxOE.gif","https://i.imgur.com/mFnKm75.gif","https://i.imgur.com/BDqzpqp.gif","https://i.imgur.com/BB4290z.gif","https://i.imgur.com/wMH4Op5.gif","https://i.imgur.com/qMCrJj0.gif","https://i.imgur.com/ZjGnHDM.gif","https://i.imgur.com/5W8oFIw.gif","https://i.imgur.com/ejS2THD.gif","https://i.imgur.com/cgVA2YO.gif","https://i.imgur.com/HFIipYF.gif","https://i.imgur.com/0d1Ued3.gif","https://i.imgur.com/lCbjs9o.gif","https://i.imgur.com/BaJ1U2V.gif","https://i.imgur.com/SVSO6Mj.gif","https://i.imgur.com/qGEKVZR.gif","https://i.imgur.com/YmQJqNT.gif","https://i.imgur.com/P1XxqTp.gif","https://i.imgur.com/LZ9Ygop.gif","https://i.imgur.com/mf9bkyo.gif","https://i.imgur.com/b6zM3hw.gif","https://i.imgur.com/BO8bQHy.gif","https://i.imgur.com/qsq3frc.gif","https://i.imgur.com/AlenP7l.gif","https://i.imgur.com/LRqihy7.gif","https://i.imgur.com/xB6qxcI.gif"]
+    },
+    pairs: {
+      name: 'Pairs',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/pXqlma8.gif","https://i.imgur.com/CDajRPD.gif","https://i.imgur.com/g21Bh6E.gif","https://i.imgur.com/89GaNMy.gif","https://i.imgur.com/7WUPWoJ.gif","https://i.imgur.com/VNMJFG8.gif","https://i.imgur.com/v4fcrIx.gif","https://i.imgur.com/GZWu3gj.gif","https://i.imgur.com/YacomnE.gif","https://i.imgur.com/ZugGYNr.gif","https://i.imgur.com/HuW2e1i.gif","https://i.imgur.com/zSzcEt6.gif","https://i.imgur.com/uiOF9wG.gif","https://i.imgur.com/EVxib6O.gif","https://i.imgur.com/TvoUFD7.gif","https://i.imgur.com/bDJFwps.gif","https://i.imgur.com/SBLd7VR.gif","https://i.imgur.com/wz61z3J.gif","https://i.imgur.com/k2m0WYC.gif","https://i.imgur.com/xFPzHL3.gif","https://i.imgur.com/qsjJlsS.gif","https://i.imgur.com/NrBxvkv.gif","https://i.imgur.com/xZCff1M.gif","https://i.imgur.com/veED69C.gif","https://i.imgur.com/yG9vMff.gif","https://i.imgur.com/CoTVmcR.gif","https://i.imgur.com/lvV9XSK.gif","https://i.imgur.com/CNLrm2w.gif","https://i.imgur.com/V8owCXo.gif","https://i.imgur.com/JmWOUkY.gif","https://i.imgur.com/SlrVXUj.gif","https://i.imgur.com/NxVsUGz.gif","https://i.imgur.com/54eShRL.gif","https://i.imgur.com/uI5h5cr.gif","https://i.imgur.com/qiYQF7P.gif","https://i.imgur.com/dIAkGqk.gif","https://i.imgur.com/EfQ6bCB.gif","https://i.imgur.com/c21IYac.gif","https://i.imgur.com/FgIeAxz.gif","https://i.imgur.com/4kiOpSA.gif","https://i.imgur.com/5oBV0ok.gif","https://i.imgur.com/1p7QTmr.gif","https://i.imgur.com/ECRnGo3.gif","https://i.imgur.com/wP6DTmX.gif","https://i.imgur.com/oZuEo0y.gif","https://i.imgur.com/02MVMMY.gif","https://i.imgur.com/bNGER1Y.gif","https://i.imgur.com/9aYqvAq.gif","https://i.imgur.com/8rQRxw5.gif","https://i.imgur.com/2Y3B3AH.gif","https://i.imgur.com/7Uz6lT3.gif","https://i.imgur.com/lMzrl8M.gif","https://i.imgur.com/6jFkwJp.gif","https://i.imgur.com/5O73KBK.gif","https://i.imgur.com/KcIifJV.gif","https://i.imgur.com/AQ9stgK.gif","https://i.imgur.com/KE13lwv.gif","https://i.imgur.com/G48l7vR.gif"]
+    },
+    misc: {
+      name: 'Misc',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/869fRPU.gif","https://i.imgur.com/kECpUEi.gif","https://i.imgur.com/KzgFekT.gif","https://i.imgur.com/3uYLj2G.gif","https://i.imgur.com/yWlOIni.gif","https://i.imgur.com/yQafxXk.gif","https://i.imgur.com/CFWZU4o.gif","https://i.imgur.com/aIriiLd.gif","https://i.imgur.com/9CLYL28.gif","https://i.imgur.com/E4sqPzd.gif","https://i.imgur.com/yWhhFIF.gif","https://i.imgur.com/Roy91ZE.gif","https://i.imgur.com/j0virBN.gif","https://i.imgur.com/6bPMgtM.gif","https://i.imgur.com/lazYAGM.gif","https://i.imgur.com/JVWwAWa.gif","https://i.imgur.com/vLB1efm.gif","https://i.imgur.com/SVZKLly.gif","https://i.imgur.com/ctQZw3u.gif","https://i.imgur.com/0ACxlVO.gif","https://i.imgur.com/fAjtZrI.gif","https://i.imgur.com/5HXkTYW.gif","https://i.imgur.com/PyO8c0P.gif","https://i.imgur.com/D2ZRxGf.gif","https://i.imgur.com/nihQDC2.gif","https://i.imgur.com/FGfFSBe.gif","https://i.imgur.com/phtThrk.gif","https://i.imgur.com/JmI2cNn.gif","https://i.imgur.com/UcJGysi.gif","https://i.imgur.com/tjwBu9P.gif","https://i.imgur.com/efNFHpf.gif","https://i.imgur.com/yMN7JPA.gif","https://i.imgur.com/HRGc3qA.gif","https://i.imgur.com/2WoQICv.gif","https://i.imgur.com/UzSlDwo.gif","https://i.imgur.com/tjPOQ1b.gif","https://i.imgur.com/apzx6bV.gif","https://i.imgur.com/WU6Cb4P.png","https://i.imgur.com/2EZEKAO.gif","https://i.imgur.com/rJxG5zz.gif","https://i.imgur.com/50lPopD.gif","https://i.imgur.com/Jsreyvp.gif","https://i.imgur.com/U8pc5ko.gif","https://i.imgur.com/kATYrIT.gif","https://i.imgur.com/FbmOkYG.jpg","https://i.imgur.com/hA4Z4iY.gif","https://i.imgur.com/2bQ2cpN.gif","https://i.imgur.com/78gMAHn.gif","https://i.imgur.com/JdJYFe9.gif","https://i.imgur.com/dDUdtZi.gif","https://i.imgur.com/jXOeS3n.gif","https://i.imgur.com/ew9jxi5.gif","https://i.imgur.com/0jtjIHn.gif","https://i.imgur.com/HiM3Fxv.gif","https://i.imgur.com/dJvGY54.gif","https://i.imgur.com/VaOcmuN.gif","https://i.imgur.com/iGISwxw.gif","https://i.imgur.com/SVSO6Mj.gif"]
+    },
+    hello_kitty: {
+      name: 'Hello Kitty',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/TOR8Qvc.gif","https://i.imgur.com/QLIrctX.gif","https://i.imgur.com/GELnQS2.gif","https://i.imgur.com/UQCGEDP.gif","https://i.imgur.com/ISKA4P0.gif","https://i.imgur.com/icvXD5F.gif","https://i.imgur.com/rhJrOES.gif","https://i.imgur.com/ILuJ77N.gif","https://i.imgur.com/kvrFI54.gif","https://i.imgur.com/aoU6nVF.gif","https://i.imgur.com/FADkR87.gif","https://i.imgur.com/Ni8eBis.gif","https://i.imgur.com/qAPPoUu.gif","https://i.imgur.com/fOM7iqF.gif","https://i.imgur.com/i55JZrt.gif","https://i.imgur.com/RW5ALD8.gif","https://i.imgur.com/CFaPDSF.gif","https://i.imgur.com/wJWtUiF.gif","https://i.imgur.com/cfU5vVi.gif","https://i.imgur.com/lW5Xita.gif","https://i.imgur.com/byJ751z.gif","https://i.imgur.com/4dhP2pz.gif","https://i.imgur.com/XksXDeD.gif","https://i.imgur.com/ilJ2qgx.gif","https://i.imgur.com/qsL8ddq.gif","https://i.imgur.com/VzfpWfW.gif","https://i.imgur.com/2Yl4nH2.gif","https://i.imgur.com/06GD1HA.gif","https://i.imgur.com/9Ehq5LY.gif","https://i.imgur.com/qDsMIdY.gif","https://i.imgur.com/63Q4pgM.gif","https://i.imgur.com/1TW6kLY.gif","https://i.imgur.com/CqwsB9o.gif","https://i.imgur.com/BZoKzBR.gif","https://i.imgur.com/OHyp91p.gif","https://i.imgur.com/iCgXnAr.gif","https://i.imgur.com/fjbYjXj.gif","https://i.imgur.com/x6HQ7cZ.gif","https://i.imgur.com/aP5VW4K.gif","https://i.imgur.com/lwBjhwY.gif","https://i.imgur.com/Dlz9uuN.gif","https://i.imgur.com/74w9kpb.gif","https://i.imgur.com/CRwPpk4.gif","https://i.imgur.com/7DblDFf.gif","https://i.imgur.com/dXfT1m7.gif","https://i.imgur.com/jXupP8S.gif","https://i.imgur.com/gBAOxv0.gif","https://i.imgur.com/wtWQEa8.gif","https://i.imgur.com/HObP1AN.gif","https://i.imgur.com/x9DNORc.gif","https://i.imgur.com/Qv0ZCGG.gif","https://i.imgur.com/tzcG8mh.gif","https://i.imgur.com/edXc9wX.gif","https://i.imgur.com/bI0kY3e.gif","https://i.imgur.com/jivH032.gif","https://i.imgur.com/c0NdC5T.gif","https://i.imgur.com/W42Fzhq.gif","https://i.imgur.com/OYI.gif"]
+    },
+    my_melody: {
+      name: 'My Melody',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/hhDQMei.gif","https://i.imgur.com/0EuBpF7.gif","https://i.imgur.com/YdPfYyJ.gif","https://i.imgur.com/pOGQOGE.gif","https://i.imgur.com/RhjA1tH.gif","https://i.imgur.com/4ZfZocr.gif","https://i.imgur.com/QnXCCcP.gif","https://i.imgur.com/m4pbVVb.gif","https://i.imgur.com/r480r5Y.gif","https://i.imgur.com/DlwM5P4.gif","https://i.imgur.com/x6fjzyz.gif","https://i.imgur.com/JPnHL26.gif","https://i.imgur.com/bRopBKc.gif","https://i.imgur.com/b7ZOSjY.gif","https://i.imgur.com/NC7y7l9.gif","https://i.imgur.com/69wbQvs.gif","https://i.imgur.com/OdNYwrn.gif","https://i.imgur.com/PehoEeX.gif","https://i.imgur.com/HKjedpn.gif","https://i.imgur.com/oXR0uGP.gif","https://i.imgur.com/SAaDvpJ.gif","https://i.imgur.com/vV5681s.gif","https://i.imgur.com/hw7nIfF.gif","https://i.imgur.com/aXcbmBk.gif","https://i.imgur.com/1Z7wshf.gif","https://i.imgur.com/gFt3r5U.gif","https://i.imgur.com/4kT77RI.gif","https://i.imgur.com/aUzwMf9.gif","https://i.imgur.com/nDakIJ7.gif","https://i.imgur.com/5ri1MfI.gif","https://i.imgur.com/aP9qvXn.gif","https://i.imgur.com/FHUyVTB.gif","https://i.imgur.com/cnaar9c.gif","https://i.imgur.com/HrrQpTp.gif","https://i.imgur.com/FjUNFMo.gif","https://i.imgur.com/0ErHLH6.gif","https://i.imgur.com/ERc4E6l.gif","https://i.imgur.com/G1vtCwK.gif","https://i.imgur.com/jpvfYYM.gif","https://i.imgur.com/YL54yUL.gif","https://i.imgur.com/HNrxBPr.gif","https://i.imgur.com/QrIJjay.gif","https://i.imgur.com/VoBuMnz.gif","https://i.imgur.com/hI8OSpB.gif","https://i.imgur.com/PVpnpFR.gif","https://i.imgur.com/bEhwfBr.gif","https://i.imgur.com/yHwWefO.gif","https://i.imgur.com/3XTA12U.gif","https://i.imgur.com/X1J6DW0.gif","https://i.imgur.com/jU5Bdvz.gif","https://i.imgur.com/kKqzRrD.gif","https://i.imgur.com/hSggiRv.gif","https://i.imgur.com/r4JQlYS.gif","https://i.imgur.com/Ct8h5fS.gif","https://i.imgur.com/3WX9b4w.gif","https://i.imgur.com/MWT4xAY.gif","https://i.imgur.com/osGzQyA.gif","https://i.imgur.com/hPwzY.gif"]
+    },
+    kuromi: {
+      name: 'Kuromi',
+      color: '#eea1cd',
+      emojis: ["https://i.imgur.com/d2kJ1yq.gif","https://i.imgur.com/NRk4SOS.gif","https://i.imgur.com/eqQi2cM.gif","https://i.imgur.com/5QL5gVP.gif","https://i.imgur.com/N9QXtnb.gif","https://i.imgur.com/prnpw0c.gif","https://i.imgur.com/JbP26S4.gif","https://i.imgur.com/SZm9mRb.gif","https://i.imgur.com/rYwsfAf.gif","https://i.imgur.com/wUGx5Yc.gif","https://i.imgur.com/d9jIWRT.gif","https://i.imgur.com/fS5hLJY.gif","https://i.imgur.com/Q68epBv.gif","https://i.imgur.com/f5GFfoR.gif","https://i.imgur.com/i3m5sq9.gif","https://i.imgur.com/9IPUmJH.gif","https://i.imgur.com/nufyIAZ.gif","https://i.imgur.com/1sFG0at.gif","https://i.imgur.com/PCk963A.gif","https://i.imgur.com/8gYoDAX.gif","https://i.imgur.com/7EjEWCY.gif","https://i.imgur.com/WMqf2uy.gif","https://i.imgur.com/DL6Z6KM.gif","https://i.imgur.com/mAU0uug.gif","https://i.imgur.com/wFWKMM9.gif","https://i.imgur.com/amwFZTx.gif","https://i.imgur.com/DztzuB4.gif","https://i.imgur.com/K0nSNLl.gif","https://i.imgur.com/jR7VcHn.gif","https://i.imgur.com/qMiGb0Q.gif","https://i.imgur.com/xjPGzx1.gif","https://i.imgur.com/1rRgRbP.gif","https://i.imgur.com/AszXVpf.gif"]
     }
   };
 
   let emojiPickerVisible = false;
+  let currentCategory = 'red';
+
+  // Category icons - use first GIF from each category
+  const categoryIcons = {
+    red: emojiCategories.red.emojis[0],
+    orange: emojiCategories.orange.emojis[0],
+    yellow: emojiCategories.yellow.emojis[0],
+    green: emojiCategories.green.emojis[0],
+    pink: emojiCategories.pink.emojis[0],
+    purple: emojiCategories.purple.emojis[0],
+    brown: emojiCategories.brown.emojis[0],
+    black: emojiCategories.black.emojis[0],
+    gray: emojiCategories.gray.emojis[0],
+    white: emojiCategories.white.emojis[0],
+    rainbow: emojiCategories.rainbow.emojis[0],
+    kuromi: emojiCategories.kuromi.emojis[0]
+  };
 
   // Create emoji picker
   const emojiPicker = document.createElement('div');
   emojiPicker.className = 'emoji-picker hidden';
 
-  // Create body container for horizontal layout
-  const emojiPickerBody = document.createElement('div');
-  emojiPickerBody.className = 'emoji-picker-body';
-
-
-  // Create emoji content area
+  // Create main content area
   const emojiContent = document.createElement('div');
   emojiContent.className = 'emoji-content';
+
+  // Create emoji grid
+  const emojiGrid = document.createElement('div');
+  emojiGrid.className = 'emoji-grid';
+
+  // Function to render emojis for a category
+  function renderCategory(category) {
+    currentCategory = category;
+    const categoryData = emojiCategories[category];
+    if (!categoryData) return;
+
+    // Update title
+    titleText.textContent = categoryData.name;
+    titleText.style.color = categoryData.color;
+
+    // Build emoji grid
+    let emojiGridHTML = '';
+    categoryData.emojis.forEach(emoji => {
+      emojiGridHTML += `<button class="emoji-item" data-url="${emoji}"><img src="${emoji}" alt="emoji" style="width: 24px; height: 24px;"></button>`;
+    });
+    emojiGrid.innerHTML = emojiGridHTML;
+
+    // Update active tab
+    document.querySelectorAll('.category-tab').forEach(tab => {
+      tab.classList.remove('active');
+      if (tab.dataset.category === category) {
+        tab.classList.add('active');
+        tab.style.setProperty('--category-color', categoryData.color);
+      }
+    });
+  }
+
+  // Create bottom category bar
+  const categoryBar = document.createElement('div');
+  categoryBar.className = 'emoji-category-bar';
+
+  // Add drag-to-scroll for desktop
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  categoryBar.addEventListener('mousedown', (e) => {
+    isDown = true;
+    categoryBar.style.cursor = 'grabbing';
+    startX = e.pageX - categoryBar.offsetLeft;
+    scrollLeft = categoryBar.scrollLeft;
+  });
+
+  categoryBar.addEventListener('mouseleave', () => {
+    isDown = false;
+    categoryBar.style.cursor = 'grab';
+  });
+
+  categoryBar.addEventListener('mouseup', () => {
+    isDown = false;
+    categoryBar.style.cursor = 'grab';
+  });
+
+  categoryBar.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - categoryBar.offsetLeft;
+    const walk = (x - startX) * 2;
+    categoryBar.scrollLeft = scrollLeft - walk;
+  });
+
+  Object.keys(emojiCategories).forEach(category => {
+    const tab = document.createElement('button');
+    tab.className = 'category-tab';
+    tab.dataset.category = category;
+    const iconUrl = categoryIcons[category];
+    tab.innerHTML = `<img src="${iconUrl}" alt="${category}" class="category-icon">`;
+    tab.style.setProperty('--category-color', emojiCategories[category].color);
+    tab.addEventListener('click', () => renderCategory(category));
+    categoryBar.appendChild(tab);
+  });
 
   // Create title with close button
   const categoryTitle = document.createElement('div');
@@ -7679,8 +8561,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const titleText = document.createElement('span');
   titleText.className = 'category-title-text';
-  titleText.textContent = 'Emojis';
-  titleText.style.color = '#eea1cd';
+  titleText.textContent = 'Red';
+  titleText.style.color = '#e68bbe';
   categoryTitle.appendChild(titleText);
 
   const closeEmojiPickerBtn = document.createElement('button');
@@ -7694,26 +8576,14 @@ document.addEventListener('DOMContentLoaded', () => {
   categoryTitle.appendChild(closeEmojiPickerBtn);
 
   emojiContent.appendChild(categoryTitle);
-
-  // Create emoji grid with all sections
-  const emojiGrid = document.createElement('div');
-  emojiGrid.className = 'emoji-grid';
-  
-  // Build emoji grid with section titles
-  let emojiGridHTML = '';
-  emojiCategories.emojis.sections.forEach(section => {
-    emojiGridHTML += `<div class="emoji-section-title">${section.title}</div>`;
-    emojiGridHTML += section.emojis.map(emoji =>
-      `<button class="emoji-item">${emoji}</button>`
-    ).join('');
-  });
-  emojiGrid.innerHTML = emojiGridHTML;
   emojiContent.appendChild(emojiGrid);
-
-  emojiPickerBody.appendChild(emojiContent);
-  emojiPicker.appendChild(emojiPickerBody);
+  emojiPicker.appendChild(emojiContent);
+  emojiPicker.appendChild(categoryBar);
 
   document.body.appendChild(emojiPicker);
+
+  // Render initial category
+  renderCategory('red');
 
   // Toggle emoji picker
   emojiBtn.addEventListener('click', (e) => {
@@ -7721,8 +8591,9 @@ document.addEventListener('DOMContentLoaded', () => {
     emojiPickerVisible = !emojiPickerVisible;
     if (emojiPickerVisible) {
       const btnRect = emojiBtn.getBoundingClientRect();
+      const pickerHeight = 320;
       emojiPicker.style.bottom = `${window.innerHeight - btnRect.top + 10}px`;
-      emojiPicker.style.left = `${btnRect.left}px`;
+      emojiPicker.style.left = `${Math.min(btnRect.left, window.innerWidth - 340)}px`;
       emojiPicker.classList.remove('hidden');
     } else {
       emojiPicker.classList.add('hidden');
@@ -7732,14 +8603,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add emoji to input
   emojiPicker.addEventListener('click', (e) => {
-    if (e.target.classList.contains('emoji-item')) {
-      chatInput.value += e.target.textContent;
+    const emojiBtn = e.target.closest('.emoji-item');
+    if (emojiBtn) {
+      const imageUrl = emojiBtn.getAttribute('data-url');
+      chatInput.innerHTML += `<img src="${imageUrl}" style="width: 20px; height: 20px;">`;
       chatInput.focus();
       // Play typing sound when adding emoji
       playTypingSound();
       // Don't close picker - allow multiple emoji selection
       // Trigger input event to show send button
       chatInput.dispatchEvent(new Event('input'));
+    }
+  });
+
+  // Prevent right-click on emoji images
+  emojiPicker.addEventListener('contextmenu', (e) => {
+    if (e.target.tagName === 'IMG') {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
     }
   });
 
@@ -7795,10 +8677,13 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Close more menus when clicking outside
   document.addEventListener('click', (e) => {
-    if (!moreMenuReceived.contains(e.target) && !e.target.closest('.more-btn')) {
+    // Don't close if clicking on a more button (that's handled separately)
+    if (e.target.closest('.more-btn')) return;
+
+    if (moreMenuReceived && !moreMenuReceived.contains(e.target)) {
       moreMenuReceived.classList.add('hidden');
     }
-    if (!moreMenuSent.contains(e.target) && !e.target.closest('.more-btn')) {
+    if (moreMenuSent && !moreMenuSent.contains(e.target)) {
       moreMenuSent.classList.add('hidden');
     }
     
@@ -7901,6 +8786,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const SWIPE_THRESHOLD = 45;
   const MAX_SWIPE_DISTANCE = 60;
 
+  // Touch events for mobile
   document.addEventListener('touchstart', (e) => {
     const messageWrapper = e.target.closest('.message-wrapper');
     if (messageWrapper && !e.target.closest('.reaction-btn') && !e.target.closest('.quick-reactions') && !e.target.closest('.more-btn') && !e.target.closest('.action-btn') && !e.target.closest('.message-actions-right')) {
@@ -7922,10 +8808,79 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Mouse events for desktop/frame version
+  document.addEventListener('mousedown', (e) => {
+    const messageWrapper = e.target.closest('.message-wrapper');
+    if (messageWrapper && !e.target.closest('.reaction-btn') && !e.target.closest('.quick-reactions') && !e.target.closest('.more-btn') && !e.target.closest('.action-btn') && !e.target.closest('.message-actions-right')) {
+      swipeStartX = e.clientX;
+      swipeCurrentMessageWrapper = messageWrapper;
+      swipeMessageContentRow = messageWrapper.querySelector('.message-content-row');
+      swipeReplyArrow = messageWrapper.querySelector('.swipe-reply-arrow');
+      isSwiping = true;
+      didSwipe = false;
+
+      // Determine message direction
+      const messageEl = messageWrapper.querySelector('.message');
+      messageDirection = messageEl.classList.contains('sent') ? 'right' : 'left';
+
+      // Remove transition for instant drag
+      if (swipeMessageContentRow) {
+        swipeMessageContentRow.classList.add('swiping');
+      }
+    }
+  });
+
   document.addEventListener('touchmove', (e) => {
     if (!isSwiping || !swipeMessageContentRow) return;
 
     const currentX = e.touches[0].clientX;
+    const deltaX = currentX - swipeStartX;
+
+    // Mark that we're actually swiping
+    if (Math.abs(deltaX) > 5) {
+      didSwipe = true;
+    }
+
+    // Allow swipe based on message direction
+    if (messageDirection === 'left' && deltaX > 0) {
+      // Received messages: swipe right
+      const swipeDistance = Math.min(deltaX, MAX_SWIPE_DISTANCE);
+      swipeMessageContentRow.style.transform = `translateX(${swipeDistance}px)`;
+
+      // Reveal arrow
+      if (swipeReplyArrow) {
+        const revealProgress = Math.min(swipeDistance / 30, 1);
+        swipeReplyArrow.style.opacity = revealProgress;
+        swipeReplyArrow.style.transform = `translateY(-50%) scale(${0.5 + (revealProgress * 0.5)})`;
+        if (revealProgress > 0) {
+          swipeReplyArrow.classList.add('visible');
+        } else {
+          swipeReplyArrow.classList.remove('visible');
+        }
+      }
+    } else if (messageDirection === 'right' && deltaX < 0) {
+      // Sent messages: swipe left
+      const swipeDistance = Math.min(Math.abs(deltaX), MAX_SWIPE_DISTANCE);
+      swipeMessageContentRow.style.transform = `translateX(-${swipeDistance}px)`;
+
+      // Reveal arrow (positioned on right for sent messages)
+      if (swipeReplyArrow) {
+        const revealProgress = Math.min(swipeDistance / 30, 1);
+        swipeReplyArrow.style.opacity = revealProgress;
+        swipeReplyArrow.style.transform = `translateY(-50%) scale(${0.5 + (revealProgress * 0.5)})`;
+        if (revealProgress > 0) {
+          swipeReplyArrow.classList.add('visible');
+        } else {
+          swipeReplyArrow.classList.remove('visible');
+        }
+      }
+    }
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isSwiping || !swipeMessageContentRow) return;
+
+    const currentX = e.clientX;
     const deltaX = currentX - swipeStartX;
 
     // Mark that we're actually swiping
@@ -7992,7 +8947,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (textSpan) {
         messageText = textSpan.textContent;
       } else if (imageEl) {
-        messageText = '📷 Image';
+        messageText = 'Attached Image';
       }
 
       replyingTo = messageText;
@@ -8018,6 +8973,79 @@ document.addEventListener('DOMContentLoaded', () => {
       if (navigator.vibrate) {
         navigator.vibrate(50);
       }
+
+      // Hide reactions bar if open
+      const reactionsEl = messageEl.querySelector('.quick-reactions');
+      if (reactionsEl) {
+        reactionsEl.classList.add('hidden');
+      }
+    }
+
+    // Spring back animation
+    if (swipeMessageContentRow) {
+      swipeMessageContentRow.classList.remove('swiping');
+      swipeMessageContentRow.style.transform = 'translateX(0)';
+    }
+
+    if (swipeReplyArrow) {
+      swipeReplyArrow.style.opacity = '0';
+      swipeReplyArrow.style.transform = 'translateY(-50%) scale(0)';
+      swipeReplyArrow.classList.remove('visible');
+    }
+
+    swipeCurrentMessageWrapper = null;
+    swipeMessageContentRow = null;
+    swipeReplyArrow = null;
+    isSwiping = false;
+    messageDirection = null;
+    didSwipe = false;
+  });
+
+  // Mouse events for desktop/frame version
+  document.addEventListener('mouseup', (e) => {
+    if (!isSwiping) return;
+
+    const endX = e.clientX;
+    const swipeDistance = Math.abs(endX - swipeStartX);
+
+    // Check if swipe exceeded threshold and in correct direction
+    const deltaX = endX - swipeStartX;
+    const correctDirection = (messageDirection === 'left' && deltaX > 0) || (messageDirection === 'right' && deltaX < 0);
+
+    if (swipeDistance >= SWIPE_THRESHOLD && correctDirection) {
+      // Trigger reply mode
+      const messageEl = swipeCurrentMessageWrapper.querySelector('.message');
+      const isSent = messageEl.classList.contains('sent');
+
+      // Handle both text and image messages
+      const textSpan = messageEl.querySelector('span.message-content-text');
+      const imageEl = messageEl.querySelector('img.message-image');
+      let messageText = '';
+
+      if (textSpan) {
+        messageText = textSpan.textContent;
+      } else if (imageEl) {
+        messageText = 'Attached Image';
+      }
+
+      replyingTo = messageText;
+      replyingToMessageElement = messageEl;
+      isReplyingToSelf = isSent;
+      replyPreview.classList.remove('hidden');
+
+      // Update reply label and text
+      const replyLabel = replyPreview.querySelector('.reply-label');
+      const replyText = replyPreview.querySelector('.reply-text');
+
+      if (isSent) {
+        replyLabel.textContent = 'Replying to yourself';
+        replyText.textContent = truncateText(messageText);
+      } else {
+        replyLabel.textContent = 'Replying to Tutan';
+        replyText.textContent = truncateText(messageText);
+      }
+
+      chatInput.focus();
 
       // Hide reactions bar if open
       const reactionsEl = messageEl.querySelector('.quick-reactions');
@@ -8150,44 +9178,63 @@ document.addEventListener('DOMContentLoaded', () => {
       mousePressTimer = null;
     }
   });
-  
-  // Handle more button click
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('.more-btn')) {
-      const moreBtn = e.target.closest('.more-btn');
-      const messageWrapper = moreBtn.closest('.message-wrapper');
-      const messageEl = messageWrapper.querySelector('.message');
-      const rect = moreBtn.getBoundingClientRect();
-      
-      // Determine message type and show appropriate menu
-      if (messageEl.classList.contains('received')) {
-        moreMenuReceived.style.top = `${rect.bottom + 8}px`;
-        moreMenuReceived.style.left = `${rect.right - 160}px`;
-        moreMenuReceived.classList.remove('hidden');
-        moreMenuSent.classList.add('hidden');
-      } else {
-        moreMenuSent.style.top = `${rect.bottom + 8}px`;
-        moreMenuSent.style.left = `${rect.right - 160}px`;
-        moreMenuSent.classList.remove('hidden');
-        moreMenuReceived.classList.add('hidden');
+
+  // Handle more button click using event delegation on chatMessages container
+  if (chatMessages) {
+    chatMessages.addEventListener('click', (e) => {
+      if (e.target.closest('.more-btn')) {
+        console.log('More button clicked');
+        e.preventDefault();
+        e.stopPropagation();
+
+        const moreBtn = e.target.closest('.more-btn');
+        const messageWrapper = moreBtn.closest('.message-wrapper');
+        const messageEl = messageWrapper.querySelector('.message');
+        const rect = moreBtn.getBoundingClientRect();
+
+        // Set global active message reference
+        activeMessageWrapper = messageWrapper;
+        activeMessage = messageEl;
+
+        // Check if menu elements exist
+        if (!moreMenuReceived || !moreMenuSent) {
+          console.error('More menu elements not found:', { moreMenuReceived, moreMenuSent });
+          return;
+        }
+
+        // Determine if sent or received message
+        const isReceived = messageEl.classList.contains('received');
+        const menu = isReceived ? moreMenuReceived : moreMenuSent;
+
+        console.log('Showing more menu for message:', isReceived ? 'received' : 'sent');
+
+        // Position menu relative to mobile-frame container
+        const containerRect = document.querySelector('.mobile-frame').getBoundingClientRect();
+        menu.style.top = (rect.top - containerRect.top + 30) + 'px';
+        menu.style.left = (rect.left - containerRect.left - 80) + 'px';
+        menu.classList.remove('hidden');
+
+        // Hide the other menu
+        if (isReceived) {
+          moreMenuSent.classList.add('hidden');
+        } else {
+          moreMenuReceived.classList.add('hidden');
+        }
+
+        // Hide reactions bar if open
+        messageEl.querySelector('.quick-reactions')?.classList.add('hidden');
       }
-      
-      activeMessage = messageEl;
-      activeMessageWrapper = messageWrapper;
-      
-      // Hide reactions bar if open
-      messageEl.querySelector('.quick-reactions')?.classList.add('hidden');
-    }
-  });
+    });
+  }
   
   // Handle more menu - reply button
   document.addEventListener('click', (e) => {
     if (e.target.closest('.more-reply-btn')) {
-      const messageText = activeMessage.querySelector('span').textContent;
+      const messageText = activeMessage.querySelector('span').innerHTML;
       
       replyingTo = messageText;
       replyPreview.classList.remove('hidden');
-      replyPreview.querySelector('.reply-text').textContent = truncateText(messageText);
+      replyPreview.querySelector('.reply-text').innerHTML = truncateText(messageText);
       chatInput.focus();
       
       moreMenuReceived.classList.add('hidden');
@@ -8198,14 +9245,35 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle more menu - copy button
   document.addEventListener('click', (e) => {
     if (e.target.closest('.more-copy-btn')) {
-      const messageText = activeMessage.querySelector('span').textContent;
+      const imageEl = activeMessage.querySelector('img.message-image');
       
-      navigator.clipboard.writeText(messageText).then(() => {
-        moreMenuReceived.classList.add('hidden');
-        moreMenuSent.classList.add('hidden');
-      }).catch(err => {
-        console.error('Failed to copy:', err);
-      });
+      if (imageEl) {
+        // Copy image to clipboard
+        fetch(imageEl.src)
+          .then(response => response.blob())
+          .then(blob => {
+            const item = new ClipboardItem({ 'image/png': blob });
+            navigator.clipboard.write([item]).then(() => {
+              moreMenuReceived.classList.add('hidden');
+              moreMenuSent.classList.add('hidden');
+            }).catch(err => {
+              console.error('Failed to copy image:', err);
+            });
+          })
+          .catch(err => {
+            console.error('Failed to fetch image:', err);
+          });
+      } else {
+        // Copy text if no image
+        const messageText = activeMessage.querySelector('span').innerHTML;
+        
+        navigator.clipboard.writeText(messageText).then(() => {
+          moreMenuReceived.classList.add('hidden');
+          moreMenuSent.classList.add('hidden');
+        }).catch(err => {
+          console.error('Failed to copy:', err);
+        });
+      }
     }
   });
   
@@ -8216,7 +9284,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       console.log('Edit button clicked, setting editingMessage to:', activeMessage);
 
-      chatInput.value = messageText;
+      chatInput.innerText = messageText;
       editingMessage = activeMessage;
       chatInput.focus();
 
@@ -8273,8 +9341,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   `;
   document.head.appendChild(replyIndicatorStyle);
-  
-  // Music Player Functionality
+});
+
+// Music Player Functionality
+document.addEventListener('DOMContentLoaded', () => {
   try {
     const musicFolder = 'App Data/Music/';
     let currentTrackIndex = 0;
@@ -8294,7 +9364,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function loadDemoPlaylist() {
       playlist = [
-        { title: 'Barish', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258311/Barish_capkfb.wav', vinyl: 'https://i.ibb.co/6c9rhFNC/Vinyl-Disc-1.png' },
+        { title: 'Mai Agar', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777488119/Mai_Agar_h1pz74.mp3', vinyl: 'https://i.ibb.co/6c9rhFNC/Vinyl-Disc-1.png' },
+        { title: 'Barish', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258311/Barish_capkfb.wav', vinyl: 'https://i.ibb.co/DHVdY1gW/Vinyl-Disc-15.png' },
         { title: 'Chale Aana', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258329/Chale_Aana_o51zfr.wav', vinyl: 'https://i.ibb.co/chz0dbFC/Vinyl-Disc-2.png' },
         { title: 'Dil Sambhal Jaa Zara', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258312/Dil_Sambhal_Jaa_Zara_fygbq2.mp4', vinyl: 'https://i.ibb.co/8g58r2m7/Vinyl-Disc-3.png' },
         { title: 'Ek Mulaqat', artist: 'SAMAD', duration: '0:00', file: 'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258340/Ek_Mulaqat_rhckgg.wav', vinyl: 'https://i.ibb.co/3mJY20PL/Vinyl-Disc-4.png' },
