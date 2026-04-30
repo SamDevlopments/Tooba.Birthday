@@ -20,49 +20,8 @@ function initLoadingScreen() {
     return false;
   });
 
-  // Detect network speed and set Vimeo quality
-  setVimeoQualityBasedOnNetwork();
-
   // Preload app data with fixed duration
   preloadAppData(loadingScreen, mobileFrame);
-}
-
-// Set Vimeo quality based on network connection
-function setVimeoQualityBasedOnNetwork() {
-  const iframe = document.getElementById('vimeoIframe');
-  if (!iframe) return;
-
-  const player = new Vimeo.Player(iframe);
-
-  // Get network information
-  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-
-  if (connection) {
-    const effectiveType = connection.effectiveType; // 'slow-2g', '2g', '3g', '4g'
-    const downlink = connection.downlink; // Mbps
-
-    // Determine quality based on connection
-    let quality = '1080p'; // Default high quality
-
-    if (effectiveType === 'slow-2g' || downlink < 0.5) {
-      quality = '360p';
-    } else if (effectiveType === '2g' || downlink < 1.5) {
-      quality = '480p';
-    } else if (effectiveType === '3g' || downlink < 5) {
-      quality = '720p';
-    } else {
-      quality = '1080p'; // 4g or better
-    }
-
-    // Set quality on Vimeo player
-    player.setQuality(quality).catch(error => {
-      console.log('Quality setting not available, using auto');
-      player.setQuality('auto');
-    });
-  } else {
-    // Fallback to auto if network info not available
-    player.setQuality('auto');
-  }
 }
 
 // Preload all app resources
@@ -115,8 +74,8 @@ async function preloadAppData(loadingScreen, mobileFrame) {
     console.log('All resources preloaded');
   });
 
-  // Hide loading screen after 20-30 seconds
-  const loadingDuration = 20000 + Math.random() * 10000; // Random 20-30 seconds
+  // Hide loading screen after 10 seconds
+  const loadingDuration = 10000; // 10 seconds exactly
   setTimeout(() => {
     loadingScreen.style.opacity = '0';
     loadingScreen.style.transition = 'opacity 0.5s ease';
