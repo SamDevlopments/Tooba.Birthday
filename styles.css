@@ -5363,7 +5363,7 @@ animation: shake 0.2s ease-in-out;
   }
 
   .emoji-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -5375,7 +5375,7 @@ animation: shake 0.2s ease-in-out;
   }
 
   .emoji-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -5651,7 +5651,7 @@ animation: shake 0.2s ease-in-out;
 
 .emoji-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 6px;
   max-height: 250px;
   overflow-y: auto;
