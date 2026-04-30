@@ -1767,6 +1767,8 @@ animation: shake 0.2s ease-in-out;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+  mask: radial-gradient(circle at center, transparent 25%, black 26%);
+  -webkit-mask: radial-gradient(circle at center, transparent 25%, black 26%);
 }
 
 .vinyl-disc.playing {
