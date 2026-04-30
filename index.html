@@ -6,31 +6,23 @@
   <title>Happy Birthday Tooba!</title>
   <link rel="stylesheet" href="styles.css">
   
-  <!-- Preload critical audio files -->
+  <!-- Preload critical audio files only -->
   <link rel="preload" as="audio" href="https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377052/typing_1_dohv3o.mp3">
   <link rel="preload" as="audio" href="https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377052/typing_2_zhxz7k.mp3">
   <link rel="preload" as="audio" href="https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377498/backspace_jbcnio.mp3">
   <link rel="preload" as="audio" href="https://res.cloudinary.com/dwwj6cltj/video/upload/v1777375033/candle_blow_uvb5wl.wav">
   <link rel="preload" as="audio" href="https://res.cloudinary.com/dwwj6cltj/video/upload/v1777315337/Welcome_Song_tnq2wr.wav">
-  <!-- Preload music playlist audio files -->
-  <link rel="preload" as="audio" href="https://res.cloudinary.com/dwwj6cltj/video/upload/v1777488119/Mai_Agar_h1pz74.mp3">
-  <link rel="preload" as="audio" href="https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258311/Barish_capkfb.wav">
-  <link rel="preload" as="audio" href="https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258329/Chale_Aana_o51zfr.wav">
   
-  <!-- Preload critical images -->
+  <!-- Preload critical images only -->
   <link rel="preload" as="image" href="https://i.ibb.co/jv00vHGV/Profile.jpg">
-  <link rel="preload" as="image" href="https://i.ibb.co/3mMS1Jp4/Female-Bird-on-click.png">
-  <link rel="preload" as="image" href="https://i.ibb.co/ZzcgQJnY/Female-Bird-on-fall.png">
-  <link rel="preload" as="image" href="https://i.ibb.co/679kNd5N/Female-Bird-on-fly.png">
-  <link rel="preload" as="image" href="https://i.ibb.co/GvtfStk4/Female-Bird-on-fall.png">
-  <!-- Preload all vinyl disc images -->
-  <link rel="preload" as="image" href="https://i.ibb.co/6c9rhFNC/Vinyl-Disc-1.png">
-  <link rel="preload" as="image" href="https://i.ibb.co/chz0dbFC/Vinyl-Disc-2.png">
-  <link rel="preload" as="image" href="https://i.ibb.co/8g58r2m7/Vinyl-Disc-3.png">
-  <link rel="preload" as="image" href="https://i.ibb.co/3mJY20PL/Vinyl-Disc-4.png">
-  <link rel="preload" as="image" href="https://i.ibb.co/TqP3k8sv/Vinyl-Disc-5.png">
 </head>
 <body>
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Loading...</p>
+  </div>
+
   <audio id="birthdayAudio" preload="auto">
     <source src="https://res.cloudinary.com/dwwj6cltj/video/upload/v1777315337/Welcome_Song_tnq2wr.wav" type="audio/wav">
   </audio>
@@ -191,7 +183,7 @@
         </div>
 
         <div class="sender-info">
-          <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Sender" class="sender-avatar" onclick="window.open('https://www.instagram.com/samad.wav/', '_blank')" style="cursor: pointer;">
+          <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Sender" class="sender-avatar" loading="lazy" onclick="window.open('https://www.instagram.com/samad.wav/', '_blank')" style="cursor: pointer;">
           <div class="sender-text">
             <p class="with-love">with all my love,</p>
             <p class="sender-name">your bestfriend</p>
@@ -320,7 +312,7 @@
         <div class="music-player" id="musicPlayerView">
           <div class="music-cover" id="musicCover">
             <div class="vinyl-disc">
-              <img id="vinylImage" src="https://i.ibb.co/6c9rhFNC/Vinyl-Disc-1.png" alt="Vinyl Disc" class="vinyl-image">
+              <img id="vinylImage" src="https://i.ibb.co/6c9rhFNC/Vinyl-Disc-1.png" alt="Vinyl Disc" class="vinyl-image" loading="lazy">
             </div>
           </div>
           <div class="music-info">
@@ -504,7 +496,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Creator" class="creator-avatar" onclick="window.open('https://www.instagram.com/samad.wav/', '_blank')" style="cursor: pointer;">
+      <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Creator" class="creator-avatar" loading="lazy" onclick="window.open('https://www.instagram.com/samad.wav/', '_blank')" style="cursor: pointer;">
       <p class="made-with">Made with love for <span class="text-pink">Tooba</span></p>
       <p class="creator">by Samad</p>
     </footer>
@@ -546,7 +538,7 @@
         </svg>
       </button>
       <div class="mini-chat-avatar">
-        <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" onclick="window.open('https://www.instagram.com/samad.wav/', '_blank')" style="cursor: pointer;">
+        <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" loading="lazy" onclick="window.open('https://www.instagram.com/samad.wav/', '_blank')" style="cursor: pointer;">
       </div>
       <div class="online-dot"></div>
       <div class="mini-chat-info">

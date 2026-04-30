@@ -34,6 +34,30 @@ let conversationState = {
 
 console.log('Script loaded successfully');
 
+// ===== Performance Utilities =====
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+function throttle(func, limit) {
+  let inThrottle;
+  return function(...args) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+}
+
 // ===== Typing Sound Effect (Optimized) =====
 const TYPING_SFX_URLS = [
   'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377052/typing_1_dohv3o.mp3',
@@ -63,38 +87,12 @@ function preloadImage(url) {
   return img;
 }
 
-// Preload critical images immediately
+// Preload critical images immediately (reduced for performance)
 const CRITICAL_IMAGES = [
-  'https://i.ibb.co/jv00vHGV/Profile.jpg',
-  'https://i.ibb.co/3mMS1Jp4/Female-Bird-on-click.png',
-  'https://i.ibb.co/ZzcgQJnY/Female-Bird-on-fall.png',
-  'https://i.ibb.co/679kNd5N/Female-Bird-on-fly.png',
-  'https://i.ibb.co/GvtfStk4/Female-Bird-on-fall.png',
-  // All vinyl disc images
-  'https://i.ibb.co/6c9rhFNC/Vinyl-Disc-1.png',
-  'https://i.ibb.co/chz0dbFC/Vinyl-Disc-2.png',
-  'https://i.ibb.co/8g58r2m7/Vinyl-Disc-3.png',
-  'https://i.ibb.co/3mJY20PL/Vinyl-Disc-4.png',
-  'https://i.ibb.co/TqP3k8sv/Vinyl-Disc-5.png',
-  'https://i.ibb.co/ZzLYxTST/Vinyl-Disc-6.png',
-  'https://i.ibb.co/Zzg294GZ/Vinyl-Disc-7.png',
-  'https://i.ibb.co/chy7Bq35/Vinyl-Disc-8.png',
-  'https://i.ibb.co/TqR0SjC7/Vinyl-Disc-9.png',
-  'https://i.ibb.co/RxNmnD3/Vinyl-Disc-10.png',
-  'https://i.ibb.co/W73WyTv/Vinyl-Disc-11.png',
-  'https://i.ibb.co/MyWX3WY0/Vinyl-Disc-12.png',
-  'https://i.ibb.co/JRZrHZkW/Vinyl-Disc-13.png',
-  'https://i.ibb.co/6RDTcx0x/Vinyl-Disc-14.png',
-  'https://i.ibb.co/DHVdY1gW/Vinyl-Disc-15.png',
-  'https://i.ibb.co/Y7MPGSJH/Vinyl-Disc-16.png',
-  'https://i.ibb.co/cXcDncL0/Vinyl-Disc-17.png',
-  'https://i.ibb.co/kVzj9rzJ/Vinyl-Disc-18.png',
-  'https://i.ibb.co/qL7KdWT4/Vinyl-Disc-19.png',
-  'https://i.ibb.co/BVn2sW51/Vinyl-Disc-20.png',
-  'https://i.ibb.co/4ZmyS2Nb/Vinyl-Disc-21.png',
-  'https://i.ibb.co/5XJ82VtV/Vinyl-Disc-22.png'
+  'https://i.ibb.co/jv00vHGV/Profile.jpg'
 ];
 
+// Lazy load vinyl discs when needed
 CRITICAL_IMAGES.forEach(url => preloadImage(url));
 
 // Preload audio files
@@ -4351,6 +4349,25 @@ function fireConfetti(options = {}) {
 
 // ===== Opening Screen =====
 document.addEventListener('DOMContentLoaded', () => {
+  // Hide loading screen when page is ready
+  const loadingScreen = document.getElementById('loadingScreen');
+  if (loadingScreen) {
+    // Use requestAnimationFrame to ensure smooth transition
+    requestAnimationFrame(() => {
+      loadingScreen.classList.add('hidden');
+      // Remove from DOM after transition
+      setTimeout(() => {
+        loadingScreen.remove();
+      }, 500);
+    });
+  }
+
+  // Performance monitoring
+  const perfData = window.performance.timing;
+  const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+  if (pageLoadTime > 0) {
+    console.log(`Page load time: ${pageLoadTime}ms`);
+  }
   const candles = document.querySelectorAll('.candle-wrapper');
   const candleText = document.getElementById('candleText');
   const startBtn = document.getElementById('startBtn');
@@ -6544,14 +6561,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let scrollTimeout;
   
   if (mobileContent) {
-    mobileContent.addEventListener('scroll', () => {
+    mobileContent.addEventListener('scroll', throttle(() => {
       mobileContent.style.setProperty('--scrollbar-opacity', '1');
       
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
         mobileContent.style.setProperty('--scrollbar-opacity', '0');
       }, 1500);
-    });
+    }, 16));
     
     // ===== Drag-to-scroll functionality =====
     let isDown = false;

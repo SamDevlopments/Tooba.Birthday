@@ -57,6 +57,42 @@ img {
   box-sizing: border-box;
 }
 
+/* ===== Loading Screen ===== */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, var(--pink-50) 0%, var(--pink-100) 50%, var(--pink-200) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loading-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(230, 139, 190, 0.2);
+  border-top-color: var(--pink-600);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  margin-top: 16px;
+  color: var(--pink-600);
+  font-weight: 600;
+  font-size: 14px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -276,6 +312,8 @@ body {
 
 .pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  will-change: opacity;
+  transform: translateZ(0);
 }
 
 /* ===== Glass Card ===== */
@@ -289,6 +327,8 @@ body {
   padding: 32px;
   animation: fadeInUp 0.6s ease-out;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  contain: layout style paint;
+  transform: translateZ(0);
 }
 
 .glass-card:hover {
@@ -614,6 +654,8 @@ body {
   position: absolute;
   opacity: 0.15;
   animation: float 8s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .floating-lily svg {
@@ -699,6 +741,8 @@ body {
   border: 1px solid rgba(238, 161, 205, 0.4);
   box-shadow: 0 12px 40px rgba(238, 161, 205, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.5), 0 1px 0 rgba(255, 255, 255, 0.3);
   animation: bounce 1s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .countdown-item:nth-child(1) { animation-delay: 0s; }
@@ -1760,6 +1804,8 @@ animation: shake 0.2s ease-in-out;
   animation: rotate 20s linear infinite;
   animation-play-state: paused;
   overflow: hidden;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .vinyl-image {
@@ -1767,8 +1813,6 @@ animation: shake 0.2s ease-in-out;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  mask: radial-gradient(circle at center, transparent 25%, black 26%);
-  -webkit-mask: radial-gradient(circle at center, transparent 25%, black 26%);
 }
 
 .vinyl-disc.playing {
