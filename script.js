@@ -1,94 +1,3 @@
-// ===== Loading Screen =====
-
-// Initialize loading screen
-function initLoadingScreen() {
-  const loadingScreen = document.getElementById('loadingScreen');
-  const mobileFrame = document.querySelector('.mobile-frame');
-
-  // Add loading screen active class to hide chat button
-  mobileFrame.classList.add('loading-screen-active');
-
-  // Prevent right-click context menu on loading screen
-  loadingScreen.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    return false;
-  });
-
-  // Prevent drag operations on loading screen
-  loadingScreen.addEventListener('dragstart', (e) => {
-    e.preventDefault();
-    return false;
-  });
-
-  // Preload app data with fixed duration
-  preloadAppData(loadingScreen, mobileFrame);
-}
-
-// Preload all app resources
-async function preloadAppData(loadingScreen, mobileFrame) {
-  const resources = [
-    // Audio files - typing and backspace sounds
-    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377052/typing_1_dohv3o.mp3',
-    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377052/typing_2_zhxz7k.mp3',
-    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777377498/backspace_jbcnio.mp3',
-    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777375033/candle_blow_uvb5wl.wav',
-    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777315337/Welcome_Song_tnq2wr.wav',
-    // Music playlist audio files
-    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777488119/Mai_Agar_h1pz74.mp3',
-    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258311/Barish_capkfb.wav',
-    'https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258329/Chale_Aana_o51zfr.wav',
-    // Image files - profile and bird sprites
-    'https://i.ibb.co/jv00vHGV/Profile.jpg',
-    'https://i.ibb.co/3mMS1Jp4/Female-Bird-on-click.png',
-    'https://i.ibb.co/ZzcgQJnY/Female-Bird-on-fall.png',
-    'https://i.ibb.co/679kNd5N/Female-Bird-on-fly.png',
-    'https://i.ibb.co/GvtfStk4/Female-Bird-on-fall.png',
-    // All vinyl disc images
-    'https://i.ibb.co/6c9rhFNC/Vinyl-Disc-1.png',
-    'https://i.ibb.co/chz0dbFC/Vinyl-Disc-2.png',
-    'https://i.ibb.co/8g58r2m7/Vinyl-Disc-3.png',
-    'https://i.ibb.co/3mJY20PL/Vinyl-Disc-4.png',
-    'https://i.ibb.co/TqP3k8sv/Vinyl-Disc-5.png',
-
-  ];
-
-  // Preload resources in background without progress tracking
-  const loadPromises = resources.map(resource => {
-    return new Promise((resolve) => {
-      if (resource.endsWith('.mp3') || resource.endsWith('.wav') || resource.endsWith('.mp4')) {
-        const audio = new Audio();
-        audio.src = resource;
-        audio.addEventListener('canplaythrough', resolve);
-        audio.addEventListener('error', resolve);
-      } else {
-        const img = new Image();
-        img.src = resource;
-        img.addEventListener('load', resolve);
-        img.addEventListener('error', resolve);
-      }
-    });
-  });
-
-  // Start preloading in background
-  Promise.all(loadPromises).then(() => {
-    console.log('All resources preloaded');
-  });
-
-  // Hide loading screen after 40 seconds
-  const loadingDuration = 40000; // 40 seconds exactly
-  setTimeout(() => {
-    loadingScreen.style.opacity = '0';
-    loadingScreen.style.transition = 'opacity 0.5s ease';
-    setTimeout(() => {
-      loadingScreen.style.display = 'none';
-      mobileFrame.classList.remove('loading-screen-active');
-    }, 500);
-  }, loadingDuration);
-}
-
-// Initialize loading screen on DOM ready
-document.addEventListener('DOMContentLoaded', initLoadingScreen);
-
 // ===== Quiz Data =====
 const quizQuestions = [
   { id: 1, q: "What question are you hoping I'll ask you?", placeholder: "something you've been wanting to share..." },
@@ -6324,7 +6233,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.open('https://www.instagram.com/samad.wav/', '_blank');
   });
 
-  // ===== iOS-style Notifications for NEET Preparation =====
+  // ===== iOS-style Notifications =====
   const designBlessings = [
     "That smile should come with a warning label.",
     "Good girl. Now do it again.",
