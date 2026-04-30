@@ -74,8 +74,8 @@ async function preloadAppData(loadingScreen, mobileFrame) {
     console.log('All resources preloaded');
   });
 
-  // Hide loading screen after 10 seconds
-  const loadingDuration = 10000; // 10 seconds exactly
+  // Hide loading screen after 40 seconds
+  const loadingDuration = 40000; // 40 seconds exactly
   setTimeout(() => {
     loadingScreen.style.opacity = '0';
     loadingScreen.style.transition = 'opacity 0.5s ease';
