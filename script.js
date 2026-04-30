@@ -2653,8 +2653,8 @@ function getLocalResponse(userMessage) {
     // More Hinglish categories
     'pyaar': [
       "Pyaar ek bahut khoobsurat cheez hai! 🤍",
-      "Pyaar mein sab kuch milti hai! Tum kya pyaar karte ho? 🤍",
-      "Pyaar sabse bada ehsaas hai! 🤍",
+      "Pyaar mein sab kuch nhi milta hai! aap kya pyaar karte hain (mujhse)? 🤍",
+      "Pyaar to hai hi wahi jo ek tarfa ho! 🤍",
       "Pyaar karna seekho! 🤍",
       "Pyaar zindagi banata hai! 🤍",
       "Pyaar mein jeena seekhte hain! 🤍"
@@ -7044,14 +7044,53 @@ document.addEventListener('DOMContentLoaded', () => {
           // Trigger AI response using transcript (if available) or generic response
           const aiResponseMessage = finalTranscript || '[Voice message]';
           
+          console.log('Triggering AI response for:', aiResponseMessage);
+          
           // Show typing indicator
-          showTypingIndicator();
+          const typingIndicator = document.createElement('div');
+          typingIndicator.className = 'message-wrapper received typing';
+          typingIndicator.innerHTML = `
+            <div class="message-content-row">
+              <div class="message received">
+                <div class="typing-indicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+          `;
+          chatMessages.appendChild(typingIndicator);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
           
           // Generate AI response
           setTimeout(async () => {
-            hideTypingIndicator();
-            const aiResponse = await generateAIResponse(aiResponseMessage);
-            displayMessage(aiResponse, 'received');
+            typingIndicator.remove();
+            try {
+              const aiResponse = await generateAIResponse(aiResponseMessage);
+              
+              // Add AI response to chat
+              const responseWrapper = document.createElement('div');
+              responseWrapper.className = 'message-wrapper received';
+              responseWrapper.innerHTML = `
+                <div class="message-content-row">
+                  <div class="message received">
+                    <span>${aiResponse}</span>
+                  </div>
+                </div>
+              `;
+              chatMessages.appendChild(responseWrapper);
+              chatMessages.scrollTop = chatMessages.scrollHeight;
+              
+              // Add to conversation history
+              conversationHistory.push({ role: 'user', message: aiResponseMessage });
+              conversationHistory.push({ role: 'assistant', message: aiResponse });
+              
+              // Play typing sound
+              playTypingSound();
+            } catch (error) {
+              console.error('Error generating AI response:', error);
+            }
           }, 1500 + Math.random() * 1000);
         };
 
@@ -8455,20 +8494,24 @@ document.addEventListener('DOMContentLoaded', () => {
   let emojiPickerVisible = false;
   let currentCategory = 'red';
 
-  // Category icons - use first GIF from each category
+  // Category icons - use different GIFs from each category
   const categoryIcons = {
-    red: emojiCategories.red.emojis[0],
-    orange: emojiCategories.orange.emojis[0],
-    yellow: emojiCategories.yellow.emojis[0],
-    green: emojiCategories.green.emojis[0],
-    pink: emojiCategories.pink.emojis[0],
-    purple: emojiCategories.purple.emojis[0],
-    brown: emojiCategories.brown.emojis[0],
-    black: emojiCategories.black.emojis[0],
-    gray: emojiCategories.gray.emojis[0],
-    white: emojiCategories.white.emojis[0],
-    rainbow: emojiCategories.rainbow.emojis[0],
-    kuromi: emojiCategories.kuromi.emojis[0]
+    red: emojiCategories.red.emojis[5],
+    orange: emojiCategories.orange.emojis[3],
+    yellow: emojiCategories.yellow.emojis[7],
+    green: emojiCategories.green.emojis[2],
+    pink: emojiCategories.pink.emojis[4],
+    purple: emojiCategories.purple.emojis[6],
+    brown: emojiCategories.brown.emojis[8],
+    black: emojiCategories.black.emojis[1],
+    gray: emojiCategories.gray.emojis[5],
+    white: emojiCategories.white.emojis[3],
+    rainbow: emojiCategories.rainbow.emojis[2],
+    pairs: emojiCategories.pairs.emojis[4],
+    misc: emojiCategories.misc.emojis[6],
+    hello_kitty: emojiCategories.hello_kitty.emojis[3],
+    my_melody: emojiCategories.my_melody.emojis[5],
+    kuromi: emojiCategories.kuromi.emojis[2]
   };
 
   // Create emoji picker
