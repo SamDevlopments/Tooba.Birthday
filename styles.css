@@ -52,22 +52,6 @@ img {
   pointer-events: none;
 }
 
-.loading-thumbnail {
-  position: absolute;
-  top: 10%;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transform: scale(1.3);
-  transform-origin: center center;
-  object-fit: cover;
-  z-index: 1;
-}
-
-.loading-video-container iframe {
-  z-index: 2;
-}
-
 /* Hide chat button during loading */
 .loading-screen-active .chat-btn,
 .loading-screen-active .mini-chat {
