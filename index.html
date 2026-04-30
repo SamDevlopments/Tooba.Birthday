@@ -140,7 +140,7 @@
         <div class="badge-inner">Digital Bouquet</div>
       </div>
       <h1>Happy Birthday <br/><span class="text-pink">TOOBA!</span></h1>
-      <p class="date">26 April • 2026</p>
+      <p class="date">25 April • 2026</p>
     </section>
 
     <!-- Countdown -->
@@ -557,45 +557,6 @@
       </button>
     </div>
     <div class="mini-chat-messages" id="chatMessages">
-      <div class="message-wrapper received">
-        <div class="message-content-row">
-          <div class="message received">
-            <span class="message-content-text">Hey Tooba! 🎂</span>
-            <div class="quick-reactions hidden">
-              <span class="reaction-emoji">🤍</span>
-              <span class="reaction-emoji">🦢</span>
-              <span class="reaction-emoji">☁️</span>
-              <span class="reaction-emoji">🕊️</span>
-              <span class="reaction-emoji">👀</span>
-              <button class="add-reaction-btn">+</button>
-            </div>
-            <div class="reaction-pill hidden">
-              <span class="reaction-pill-emoji">🤍</span>
-              <span class="reaction-pill-count">1</span>
-            </div>
-          </div>
-          <div class="message-actions">
-            <button class="action-btn reaction-btn" title="React">☺︎</button>
-            <button class="action-btn reply-btn" title="Reply">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4">
-                <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
-              </svg>
-            </button>
-            <button class="action-btn more-btn" title="More">
-              <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
-                <circle cx="12" cy="5" r="2"/>
-                <circle cx="12" cy="12" r="2"/>
-                <circle cx="12" cy="19" r="2"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="swipe-reply-arrow">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
-          </svg>
-        </div>
-      </div>
     </div>
     <div class="reply-preview hidden" id="replyPreview">
       <div class="reply-preview-content">
@@ -702,6 +663,17 @@
       </svg>
     </button>
     <img src="" alt="Full size image" class="image-viewer-img" id="imageViewerImg">
+  </div>
+
+  <!-- Video Viewer -->
+  <div id="videoViewer" class="video-viewer hidden">
+    <div class="video-viewer-backdrop" id="videoViewerBackdrop"></div>
+    <button class="video-viewer-close" id="videoViewerClose">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+    <div class="video-viewer-content" id="videoViewerContent"></div>
   </div>
 
   <!-- More Menu Dropdown for Received Messages -->

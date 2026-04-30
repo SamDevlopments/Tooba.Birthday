@@ -4087,6 +4087,20 @@ animation: shake 0.2s ease-in-out;
 .message-wrapper.received {
   align-self: flex-start;
   transform-origin: left bottom;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.message-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(238, 161, 205, 0.5);
+  flex-shrink: 0;
+  align-self: flex-end;
+  margin-bottom: 4px;
 }
 
 .message-wrapper.sent {
@@ -4152,6 +4166,12 @@ animation: shake 0.2s ease-in-out;
 
 .typing-indicator span:nth-child(3) {
   animation-delay: 0.3s;
+}
+
+.message-wrapper.received.typing {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
 }
 
 @keyframes typingPulse {
@@ -4949,6 +4969,31 @@ animation: shake 0.2s ease-in-out;
   color: var(--pink-700);
 }
 
+/* Song Info Styling for AI Voice Notes */
+.song-info {
+  display: flex;
+  flex-direction: column;
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: rgba(238, 161, 205, 0.15);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.song-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pink-700);
+  line-height: 1.3;
+}
+
+.song-artist {
+  font-size: 11px;
+  color: var(--pink-600);
+  opacity: 0.8;
+  line-height: 1.2;
+}
+
 /* Transcript toggle button */
 .transcript-toggle {
   display: flex;
@@ -5069,6 +5114,59 @@ animation: shake 0.2s ease-in-out;
   box-shadow: 0 6px 20px rgba(238, 161, 205, 0.3);
 }
 
+.video-thumbnail {
+  margin-top: 8px;
+  width: 100%;
+  max-width: 160px;
+  aspect-ratio: 9/16;
+  background: linear-gradient(135deg, rgba(238, 161, 205, 0.3), rgba(230, 139, 190, 0.2));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.video-thumbnail::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.video-thumbnail:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(238, 161, 205, 0.3);
+}
+
+.video-thumbnail:hover::before {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.video-play-icon {
+  width: 48px;
+  height: 48px;
+  color: white;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.video-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--pink-600);
+  font-weight: 600;
+  opacity: 0.5;
+}
+
 .message-actions-right {
   display: flex;
   flex-direction: column;
@@ -5093,6 +5191,63 @@ animation: shake 0.2s ease-in-out;
 
 .image-viewer.hidden {
   display: none;
+}
+
+/* ===== Video Viewer ===== */
+.video-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.95);
+}
+
+.video-viewer.hidden {
+  display: none;
+}
+
+.video-viewer-backdrop {
+  position: absolute;
+  inset: 0;
+}
+
+.video-viewer-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  color: white;
+  transition: background 0.2s ease;
+}
+
+.video-viewer-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.video-viewer-content {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  max-height: 80vh;
+  z-index: 1;
+}
+
+.video-viewer-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
 }
 
 .image-viewer-backdrop {

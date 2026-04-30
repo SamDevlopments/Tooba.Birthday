@@ -12,6 +12,43 @@ const quizQuestions = [
   { id: 10, q: "What makes you feel safe with someone?", placeholder: "that feeling of comfort..." }
 ];
 
+// ===== Song Playlist Data =====
+const songPlaylist = [
+  { id: 1, name: "Mai Agar", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777488119/Mai_Agar_h1pz74.mp3" },
+  { id: 2, name: "Barish", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258311/Barish_capkfb.wav" },
+  { id: 3, name: "Chale Aana", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258329/Chale_Aana_o51zfr.wav" },
+  { id: 4, name: "Dil Sambhal Jaa Zara", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258312/Dil_Sambhal_Jaa_Zara_fygbq2.mp4" },
+  { id: 5, name: "Ek Mulaqat", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258340/Ek_Mulaqat_rhckgg.wav" },
+  { id: 6, name: "Hua Hai Aj Pehli Bar", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258331/Hua_Hai_Aj_Pehli_Bar_ejfd1x.wav" },
+  { id: 7, name: "Ishq De Fanyar", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258271/Ishq_De_Fanyar_nmayco.mp3" },
+  { id: 8, name: "Khat", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258274/Khat_o7epcm.wav" },
+  { id: 9, name: "Mai Fir Bhi Tumko Chahuga", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258308/Mai_Fir_Bhi_Tumko_Chahuga_yn8gl6.wav" },
+  { id: 10, name: "Mere Pas Tum Ho P1", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258433/Mere_Pas_Tum_Ho_P1_mfs2nk.wav" },
+  { id: 11, name: "Mere Pas Tum Ho P2", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258442/Mere_Pas_Tum_Ho_P2_fhzmus.wav" },
+  { id: 12, name: "Mere Pas Tum Ho P3", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258431/Mere_Pas_Tum_Ho_P3_o105we.wav" },
+  { id: 13, name: "Noor Mehal", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258318/Noor_Mehal_jjx1uy.wav" },
+  { id: 14, name: "Ore Piya", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258322/Ore_Piya_wsmlz6.wav" },
+  { id: 15, name: "Stare (ikka)", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258298/Sitare_ikka_zuiaq0.wav" },
+  { id: 16, name: "Tere Jeha (Cute Version)", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258504/Cute_Version_Tere_Jeha_q4tiav.wav" },
+  { id: 17, name: "Tere Jeha (Original)", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258504/Original_Tere_Jeha_z6cr0d.wav" },
+  { id: 18, name: "Tere Liye", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258295/Tere_Liye_wzdzrl.wav" },
+  { id: 19, name: "Tumhe Apna Banane Ka", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258304/Tumhe_Apna_Banane_Ka_caohpz.wav" },
+  { id: 20, name: "Ye Kya Baat Hai Ajki Chandni Me", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258315/Ye_Kya_Baat_Hai_Ajki_Chandni_Me_sfxmnp.wav" },
+  { id: 21, name: "Zara Zara P1", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258580/Zara_Zara_P1_fmelx0.wav" },
+  { id: 22, name: "Zara Zara P2", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258583/Zara_Zara_P2_p5xbst.wav" },
+  { id: 23, name: "Zara Zara P3", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777258584/Zara_Zara_P3_jr4bc9.wav" },
+  { id: 24, name: "Dhun (in Rain)", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370764/Dhun_in_rain_ujboj4.wav" },
+  { id: 25, name: "Bairan", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370745/Bairan_farjko.wav" },
+  { id: 26, name: "Aitbar Dendi Han", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370744/Aitbar_Dendi_Han_z9ds0s.wav" },
+  { id: 27, name: "Jhol", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370884/Jhol_eceord.mp3" },
+  { id: 28, name: "Tu Jaane Na", artist: "SAMAD", duration: "0:00", audioUrl: "https://res.cloudinary.com/dwwj6cltj/video/upload/v1777370957/Tu_Jaane_Na_inghrm.wav" }
+];
+
+let songRequestState = {
+  awaitingResponse: false,
+  suggestedSongs: []
+};
+
 let quizAnswers = new Array(quizQuestions.length).fill('');
 let currentQuestionIndex = 0;
 let gameStarted = false;
@@ -234,6 +271,79 @@ async function analyzeImageWithAI(imageBase64, userMessage = '') {
 // Generate AI response using multiple free APIs for knowledge and conversational AI
 async function generateAIResponse(userMessage) {
   const lowerMessage = userMessage.toLowerCase();
+
+  // Check for video request triggers
+  if (lowerMessage.includes('video') || lowerMessage.includes('show me something') || lowerMessage.includes('surprise me') || lowerMessage.includes('something for me') || lowerMessage.includes('watch')) {
+    const videoEmbedCode = '<div style="position:relative;width:100%;overflow:hidden;padding-top:184.33%"><iframe style="position:absolute;top:0;left:0;bottom:0;right:0;width:100%;height:100%;border:none" allow="autoplay; fullscreen" webkitallowfullscreen mozallowfullscreen allowfullscreen src="https://videos.dyntube.com/iframes/PkwjEl6fBUGplNFmV0lVlA" title="SanWish Loading Screen 1"></iframe></div>';
+    conversationHistory.push({ role: 'user', message: userMessage });
+    conversationHistory.push({ role: 'assistant', message: "here's something for you." });
+    if (conversationHistory.length > MAX_HISTORY * 2) {
+      conversationHistory = conversationHistory.slice(-MAX_HISTORY * 2);
+    }
+    // Return special marker to trigger video
+    return 'SEND_VIDEO:' + videoEmbedCode;
+  }
+
+  // Check for song request
+  if (lowerMessage.includes('song') || lowerMessage.includes('music') || lowerMessage.includes('sing')) {
+    if (!songRequestState.awaitingResponse) {
+      // First mention of song - ask if they want to hear one
+      songRequestState.awaitingResponse = true;
+      conversationHistory.push({ role: 'user', message: userMessage });
+      conversationHistory.push({ role: 'assistant', message: "Can I sing for you?" });
+      if (conversationHistory.length > MAX_HISTORY * 2) {
+        conversationHistory = conversationHistory.slice(-MAX_HISTORY * 2);
+      }
+      return "Can I sing for you?";
+    }
+  }
+
+  // Check if user agreed to hear a song
+  if (songRequestState.awaitingResponse && (lowerMessage.includes('yes') || lowerMessage.includes('sure') || lowerMessage.includes('okay') || lowerMessage.includes('ok') || lowerMessage.includes('yeah') || lowerMessage.includes('please'))) {
+    // Select 5 random songs from playlist
+    const shuffled = [...songPlaylist].sort(() => 0.5 - Math.random());
+    songRequestState.suggestedSongs = shuffled.slice(0, 5);
+    
+    let songList = "Pick one song:\n\n";
+    songRequestState.suggestedSongs.forEach((song, index) => {
+      songList += `${index + 1}. ${song.name}\n`;
+    });
+    songList += "\nTell me the number!";
+    
+    conversationHistory.push({ role: 'user', message: userMessage });
+    conversationHistory.push({ role: 'assistant', message: songList });
+    if (conversationHistory.length > MAX_HISTORY * 2) {
+      conversationHistory = conversationHistory.slice(-MAX_HISTORY * 2);
+    }
+    return songList;
+  }
+
+  // Check if user selected a specific song (by number or name)
+  if (songRequestState.suggestedSongs.length > 0) {
+    // Check for number selection
+    const numberMatch = userMessage.match(/\d+/);
+    if (numberMatch) {
+      const selectedNum = parseInt(numberMatch[0]);
+      if (selectedNum >= 1 && selectedNum <= songRequestState.suggestedSongs.length) {
+        const selectedSong = songRequestState.suggestedSongs[selectedNum - 1];
+        songRequestState.awaitingResponse = false;
+        songRequestState.suggestedSongs = [];
+        // Return marker to send song as voice note
+        return `SEND_SONG:${JSON.stringify(selectedSong)}`;
+      }
+    }
+    
+    // Check for song name match
+    const songMatch = songRequestState.suggestedSongs.find(song => 
+      lowerMessage.includes(song.name.toLowerCase())
+    );
+    if (songMatch) {
+      songRequestState.awaitingResponse = false;
+      songRequestState.suggestedSongs = [];
+      // Return marker to send song as voice note
+      return `SEND_SONG:${JSON.stringify(songMatch)}`;
+    }
+  }
 
   // Update conversation state
   const topics = ['science', 'space', 'technology', 'history', 'geography', 'sports', 'movies', 'music', 'food', 'health', 'education', 'books', 'travel', 'relationships', 'emotions', 'dreams', 'goals', 'hobbies', 'work', 'school'];
@@ -2696,41 +2806,41 @@ function getLocalResponse(userMessage) {
       "Janamdin par bahut bahut badhai! 🎉"
     ],
     'manya': [
-      "Manya's birthday is April 26, 2026! 🎂",
-      "Manya was born on April 26, 2026! Such a special day! 🎉",
-      "Manya's birthday is April 26th - a day to celebrate! 🤍",
-      "April 26, 2026 - Manya's special birthday! 🎂"
+      "Manya's birthday is April 25, 2026! 🎂",
+      "Manya was born on April 25, 2026! Such a special day! 🎉",
+      "Manya's birthday is April 25th - a day to celebrate! 🤍",
+      "April 25, 2026 - Manya's special birthday! 🎂"
     ],
     'manya birthday': [
-      "Manya's birthday is April 26, 2026! 🎂",
-      "Manya was born on April 26, 2026! Such a special day! 🎉",
-      "Manya's birthday is April 26th - a day to celebrate! 🤍",
-      "April 26, 2026 - Manya's special birthday! 🎂"
+      "Manya's birthday is April 25, 2026! 🎂",
+      "Manya was born on April 25, 2026! Such a special day! 🎉",
+      "Manya's birthday is April 25th - a day to celebrate! 🤍",
+      "April 25, 2026 - Manya's special birthday! 🎂"
     ],
     'when is tooba birthday': [
-      "Tooba's birthday is April 26, 2026! 🎂",
-      "April 26, 2026 is Tooba's birthday! 🎉",
-      "Tooba celebrates her birthday on April 26th! 🤍",
-      "Tooba's special day is April 26, 2026! 🎂"
+      "Tooba's birthday is April 25, 2026! 🎂",
+      "April 25, 2026 is Tooba's birthday! 🎉",
+      "Tooba celebrates her birthday on April 25th! 🤍",
+      "Tooba's special day is April 25, 2026! 🎂"
     ],
     'tooba birthdate': [
-      "Tooba's birthdate is April 26, 2026! 🎂",
-      "April 26, 2026 - that's Tooba's birthdate! 🎉",
-      "Tooba was born on April 26, 2026! 🤍",
-      "Tooba's birthdate: April 26, 2026! 🎂"
+      "Tooba's birthdate is April 25, 2026! 🎂",
+      "April 25, 2026 - that's Tooba's birthdate! 🎉",
+      "Tooba was born on April 25, 2026! 🤍",
+      "Tooba's birthdate: April 25, 2026! 🎂"
     ],
     // Hinglish Tooba
     'tooba ka birthday': [
-      "Tooba ka birthday 26 April 2026 hai! 🎂",
-      "Tooba ka janamdin 26 April ko hai! 🎉",
-      "26 April 2026 - Tooba ka special day! 🤍",
-      "Tooba ka birthday: 26 April 2026! 🎂"
+      "Tooba ka birthday 25 April 2026 hai! 🎂",
+      "Tooba ka janamdin 25 April ko hai! 🎉",
+      "25 April 2026 - Tooba ka special day! 🤍",
+      "Tooba ka birthday: 25 April 2026! 🎂"
     ],
     'tooba ka janamdin': [
-      "Tooba ka janamdin 26 April 2026 hai! 🎂",
-      "26 April 2026 ko Tooba ka birthday hai! 🎉",
-      "Tooba ka special day 26 April hai! 🤍",
-      "Tooba ka birthday: 26 April 2026! 🎂"
+      "Tooba ka janamdin 25 April 2026 hai! 🎂",
+      "25 April 2026 ko Tooba ka birthday hai! 🎉",
+      "Tooba ka special day 25 April hai! 🤍",
+      "Tooba ka birthday: 25 April 2026! 🎂"
     ],
     'thanks': [
       "You're so welcome! I'm always happy to chat with you! 🤍",
@@ -6238,7 +6348,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     try {
       await navigator.clipboard.writeText(content);
-      alert("Answers copied to clipboard! Don't forget to send them to Tutan. 😉");
+      alert("Answers copied to clipboard! Don't forget to send them to Samad. 😉");
     } catch (err) {
       console.error('Failed to copy:', err);
       alert("Failed to copy answers. Please try again or copy manually.");
@@ -6719,6 +6829,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const imageViewerImg = document.getElementById('imageViewerImg');
   const imageViewerBackdrop = document.getElementById('imageViewerBackdrop');
   const imageViewerClose = document.getElementById('imageViewerClose');
+  const videoViewer = document.getElementById('videoViewer');
+  const videoViewerContent = document.getElementById('videoViewerContent');
+  const videoViewerBackdrop = document.getElementById('videoViewerBackdrop');
+  const videoViewerClose = document.getElementById('videoViewerClose');
   const recordingInterface = document.getElementById('recordingInterface');
   const cancelRecordingBtn = document.getElementById('cancelRecordingBtn');
   const sendRecordingBtn = document.getElementById('sendRecordingBtn');
@@ -6787,6 +6901,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Toggle chat visibility
+  let firstChatOpen = true;
   chatBtn.addEventListener('click', () => {
     console.log('Chat button clicked!');
     miniChat.classList.toggle('hidden');
@@ -6794,6 +6909,14 @@ document.addEventListener('DOMContentLoaded', () => {
       chatBtn.classList.add('hidden');
       // Auto-focus input when chat opens
       setTimeout(() => chatInput.focus(), 100);
+      // Send video message on first chat open
+      if (firstChatOpen) {
+        firstChatOpen = false;
+        const videoEmbedCode = '<div style="position:relative;width:100%;overflow:hidden;padding-top:184.33%"><iframe style="position:absolute;top:0;left:0;bottom:0;right:0;width:100%;height:100%;border:none" allow="autoplay; fullscreen" webkitallowfullscreen mozallowfullscreen allowfullscreen src="https://videos.dyntube.com/iframes/PkwjEl6fBUGplNFmV0lVlA" title="SanWish Loading Screen 1"></iframe></div>';
+        setTimeout(() => {
+          sendVideoMessage(videoEmbedCode, "here's something for you.");
+        }, 500);
+      }
     } else {
       chatBtn.classList.remove('hidden');
       // Trigger iOS spring animation when button becomes visible
@@ -6935,6 +7058,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const typingIndicator = document.createElement('div');
           typingIndicator.className = 'message-wrapper received typing';
           typingIndicator.innerHTML = `
+            <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
             <div class="message-content-row">
               <div class="message received">
                 <div class="typing-indicator">
@@ -6953,11 +7077,26 @@ document.addEventListener('DOMContentLoaded', () => {
             typingIndicator.remove();
             try {
               const aiResponse = await generateAIResponse(aiResponseMessage);
-              
+
+              // Check if AI response contains video marker
+              if (aiResponse.startsWith('SEND_VIDEO:')) {
+                const videoEmbedCode = aiResponse.replace('SEND_VIDEO:', '');
+                sendVideoMessage(videoEmbedCode, "here's something for you.");
+                return;
+              }
+
+              // Check if AI response contains song marker
+              if (aiResponse.startsWith('SEND_SONG:')) {
+                const songData = JSON.parse(aiResponse.replace('SEND_SONG:', ''));
+                sendAIVoiceNote(songData);
+                return;
+              }
+
               // Add AI response to chat
               const responseWrapper = document.createElement('div');
               responseWrapper.className = 'message-wrapper received';
               responseWrapper.innerHTML = `
+                <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
                 <div class="message-content-row">
                   <div class="message received">
                     <span>${aiResponse}</span>
@@ -7412,6 +7551,75 @@ document.addEventListener('DOMContentLoaded', () => {
     return bars;
   }
 
+  // Function to send AI voice note (styled like user voice notes but as received)
+  function sendAIVoiceNote(songData) {
+    const audio = new Audio(songData.audioUrl);
+    audio.onloadedmetadata = () => {
+      const duration = Math.floor(audio.duration);
+      const minutes = Math.floor(duration / 60);
+      const seconds = duration % 60;
+      const durationText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      const messageId = 'msg-ai-' + Date.now();
+      const waveformId = 'waveform-ai-' + Date.now();
+
+      const messageWrapper = document.createElement('div');
+      messageWrapper.className = 'message-wrapper received';
+      messageWrapper.innerHTML = `
+        <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
+        <div class="message-content-row">
+          <div class="message received">
+            <div class="audio-message-bubble received">
+              <button class="audio-play-btn" onclick="toggleAudioPlayback(this, '${songData.audioUrl}')">
+                <svg viewBox="0 0 24 24">
+                  <polygon points="5,3 19,12 5,21" fill="currentColor"/>
+                </svg>
+              </button>
+              <div class="audio-waveform-container" id="${waveformId}">
+                ${generateWaveformBars()}
+              </div>
+              <span class="audio-duration">${durationText}</span>
+            </div>
+            <div class="quick-reactions hidden">
+              <span class="reaction-emoji">🤍</span>
+              <span class="reaction-emoji">🦢</span>
+              <span class="reaction-emoji">☁️</span>
+              <span class="reaction-emoji">🕊️</span>
+              <span class="reaction-emoji">👀</span>
+              <button class="add-reaction-btn">+</button>
+            </div>
+            <div class="reaction-pill hidden">
+              <span class="reaction-pill-emoji">🤍</span>
+              <span class="reaction-pill-count">1</span>
+            </div>
+          </div>
+          <div class="message-actions">
+            <button class="action-btn reaction-btn" title="React">☺︎</button>
+            <button class="action-btn reply-btn" title="Reply">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4">
+                <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+              </svg>
+            </button>
+            <button class="action-btn more-btn" title="More">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                <circle cx="12" cy="5" r="2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <circle cx="12" cy="19" r="2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="swipe-reply-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+          </svg>
+        </div>
+      `;
+      chatMessages.appendChild(messageWrapper);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      addSwipeToReply(messageWrapper);
+    };
+  }
+
   window.toggleAudioPlayback = function(btn, audioSrc) {
     const isPlaying = btn.classList.contains('playing');
     const allAudioBtns = document.querySelectorAll('.audio-play-btn');
@@ -7443,9 +7651,28 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       btn.audioElement.play();
+      
+      // Get duration element and update during playback
+      const durationEl = btn.closest('.audio-message-bubble').querySelector('.audio-duration');
+      const totalDuration = btn.audioElement.duration || 0;
+      
+      btn.audioElement.ontimeupdate = () => {
+        if (durationEl && totalDuration > 0) {
+          const remaining = totalDuration - btn.audioElement.currentTime;
+          const minutes = Math.floor(remaining / 60);
+          const seconds = Math.floor(remaining % 60);
+          durationEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+      };
+      
       btn.audioElement.onended = () => {
         btn.classList.remove('playing');
         btn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>';
+        if (durationEl) {
+          const totalMinutes = Math.floor(totalDuration / 60);
+          const totalSeconds = Math.floor(totalDuration % 60);
+          durationEl.textContent = `${totalMinutes}:${totalSeconds.toString().padStart(2, '0')}`;
+        }
       };
 
       // Animate waveform bars
@@ -7536,7 +7763,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const replyLabel = replyPreview.querySelector('.reply-label');
         const replyText = replyPreview.querySelector('.reply-text');
-        replyLabel.textContent = 'Replying to Tutan';
+        replyLabel.textContent = 'Replying to Samad';
         replyText.textContent = truncateText(messageText);
         
         chatInput.focus();
@@ -7593,7 +7820,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const replyLabel = replyPreview.querySelector('.reply-label');
         const replyText = replyPreview.querySelector('.reply-text');
-        replyLabel.textContent = 'Replying to Tutan';
+        replyLabel.textContent = 'Replying to Samad';
         replyText.textContent = truncateText(messageText);
         
         chatInput.focus();
@@ -7674,6 +7901,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const typingIndicator = document.createElement('div');
     typingIndicator.className = 'message-wrapper received typing';
     typingIndicator.innerHTML = `
+      <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
       <div class="message-content-row">
         <div class="message received">
           <div class="typing-indicator">
@@ -7696,6 +7924,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const receivedMessageWrapper = document.createElement('div');
       receivedMessageWrapper.className = 'message-wrapper received';
       receivedMessageWrapper.innerHTML = `
+        <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
         <div class="message-content-row">
           <div class="message received">
             <span class="message-content-text">${analysis}</span>
@@ -7762,7 +7991,88 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape' && !imageViewer.classList.contains('hidden')) {
       closeImageViewer();
     }
+    if (e.key === 'Escape' && !videoViewer.classList.contains('hidden')) {
+      closeVideoViewer();
+    }
   });
+
+  // Open video viewer
+  function openVideoViewer(videoEmbedCode) {
+    videoViewerContent.innerHTML = videoEmbedCode;
+    videoViewer.classList.remove('hidden');
+  }
+
+  // Close video viewer
+  function closeVideoViewer() {
+    videoViewer.classList.add('hidden');
+    videoViewerContent.innerHTML = '';
+  }
+
+  // Close video viewer on backdrop click
+  videoViewerBackdrop.addEventListener('click', closeVideoViewer);
+
+  // Close video viewer on close button click
+  videoViewerClose.addEventListener('click', closeVideoViewer);
+
+  // Function to send video message
+  function sendVideoMessage(videoEmbedCode, messageText = "here's something for you.") {
+    const messageWrapper = document.createElement('div');
+    messageWrapper.className = 'message-wrapper received';
+    messageWrapper.innerHTML = `
+      <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
+      <div class="message-content-row">
+        <div class="message received">
+          <div class="video-thumbnail" data-video="${encodeURIComponent(videoEmbedCode)}" style="background-image: url('https://i.ibb.co/sY006dM/Black-Video-0-Still001.png'); background-size: cover; background-position: center;">
+            <svg class="video-play-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+          <span class="message-content-text">${messageText}</span>
+          <div class="quick-reactions hidden">
+            <span class="reaction-emoji">🤍</span>
+            <span class="reaction-emoji">🦢</span>
+            <span class="reaction-emoji">☁️</span>
+            <span class="reaction-emoji">🕊️</span>
+            <span class="reaction-emoji">👀</span>
+            <button class="add-reaction-btn">+</button>
+          </div>
+          <div class="reaction-pill hidden">
+            <span class="reaction-pill-emoji">🤍</span>
+            <span class="reaction-pill-count">1</span>
+          </div>
+        </div>
+        <div class="message-actions">
+          <button class="action-btn reaction-btn" title="React">☺︎</button>
+          <button class="action-btn reply-btn" title="Reply">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4">
+              <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+            </svg>
+          </button>
+          <button class="action-btn more-btn" title="More">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+              <circle cx="12" cy="5" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="12" cy="19" r="2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="swipe-reply-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+        </svg>
+      </div>
+    `;
+    chatMessages.appendChild(messageWrapper);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    addSwipeToReply(messageWrapper);
+
+    // Add click handler to open video viewer
+    const videoThumbnail = messageWrapper.querySelector('.video-thumbnail');
+    videoThumbnail.addEventListener('click', () => {
+      openVideoViewer(videoEmbedCode);
+    });
+  }
 
   document.querySelector('.sticker-btn').addEventListener('click', () => {
     console.log('Sticker option selected');
@@ -7880,6 +8190,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const typingIndicator = document.createElement('div');
         typingIndicator.className = 'message-wrapper received typing';
         typingIndicator.innerHTML = `
+          <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
           <div class="message-content-row">
             <div class="message received">
               <div class="typing-indicator">
@@ -7904,6 +8215,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const receivedMessageWrapper = document.createElement('div');
             receivedMessageWrapper.className = 'message-wrapper received';
             receivedMessageWrapper.innerHTML = `
+              <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
               <div class="message-content-row">
                 <div class="message received">
                   <span class="message-content-text">${response}</span>
@@ -7948,6 +8260,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const fallbackWrapper = document.createElement('div');
             fallbackWrapper.className = 'message-wrapper received';
             fallbackWrapper.innerHTML = `
+              <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
               <div class="message-content-row">
                 <div class="message received">
                   <span class="message-content-text">${fallback}</span>
@@ -7996,6 +8309,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const fallbackWrapper = document.createElement('div');
           fallbackWrapper.className = 'message-wrapper received';
           fallbackWrapper.innerHTML = `
+            <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
             <div class="message-content-row">
               <div class="message received">
                 <span class="message-content-text">${fallback}</span>
@@ -8145,6 +8459,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const typingIndicator = document.createElement('div');
       typingIndicator.className = 'message-wrapper received typing';
       typingIndicator.innerHTML = `
+        <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
         <div class="message-content-row">
           <div class="message received">
             <div class="typing-indicator">
@@ -8165,9 +8480,24 @@ document.addEventListener('DOMContentLoaded', () => {
         // Remove typing indicator
         typingIndicator.remove();
 
+        // Check if AI response contains video marker
+        if (aiResponse.startsWith('SEND_VIDEO:')) {
+          const videoEmbedCode = aiResponse.replace('SEND_VIDEO:', '');
+          sendVideoMessage(videoEmbedCode, "here's something for you.");
+          return;
+        }
+
+        // Check if AI response contains song marker
+        if (aiResponse.startsWith('SEND_SONG:')) {
+          const songData = JSON.parse(aiResponse.replace('SEND_SONG:', ''));
+          sendAIVoiceNote(songData);
+          return;
+        }
+
         const receivedMessageWrapper = document.createElement('div');
         receivedMessageWrapper.className = 'message-wrapper received';
         receivedMessageWrapper.innerHTML = `
+          <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
           <div class="message-content-row">
             <div class="message received">
               <span class="message-content-text">${aiResponse}</span>
@@ -8212,6 +8542,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const errorMessage = document.createElement('div');
         errorMessage.className = 'message-wrapper received';
         errorMessage.innerHTML = `
+          <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
           <div class="message-content-row">
             <div class="message received">
               <span class="message-content-text">Sorry, I'm having trouble thinking right now. Please try again! 🤍</span>
@@ -8731,6 +9062,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const responseWrapper = document.createElement('div');
       responseWrapper.className = 'message-wrapper received';
       responseWrapper.innerHTML = `
+        <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
         <div class="message-content-row">
           <div class="message received">
             <span>${aiResponse}</span>
@@ -8748,6 +9080,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const typingIndicator = document.createElement('div');
     typingIndicator.className = 'message-wrapper received typing';
     typingIndicator.innerHTML = `
+      <img src="https://i.ibb.co/jv00vHGV/Profile.jpg" alt="Samad" class="message-avatar">
       <div class="message-content-row">
         <div class="message received">
           <div class="typing-indicator">
@@ -8894,7 +9227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         replyLabel.textContent = 'Replying to yourself';
         replyText.textContent = truncateText(messageText);
       } else {
-        replyLabel.textContent = 'Replying to Tutan';
+        replyLabel.textContent = 'Replying to Samad';
         replyText.textContent = truncateText(messageText);
       }
       
@@ -9096,7 +9429,7 @@ document.addEventListener('DOMContentLoaded', () => {
         replyLabel.textContent = 'Replying to yourself';
         replyText.textContent = truncateText(messageText);
       } else {
-        replyLabel.textContent = 'Replying to Tutan';
+        replyLabel.textContent = 'Replying to Samad';
         replyText.textContent = truncateText(messageText);
       }
 
@@ -9174,7 +9507,7 @@ document.addEventListener('DOMContentLoaded', () => {
         replyLabel.textContent = 'Replying to yourself';
         replyText.textContent = truncateText(messageText);
       } else {
-        replyLabel.textContent = 'Replying to Tutan';
+        replyLabel.textContent = 'Replying to Samad';
         replyText.textContent = truncateText(messageText);
       }
 
