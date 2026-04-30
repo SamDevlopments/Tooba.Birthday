@@ -6404,7 +6404,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       <div class="notification-body">
         <div class="notification-header">
-          <span class="app-name">Samad</span>
+          <span class="app-name">Samad <img src="https://res.cloudinary.com/dwwj6cltj/image/upload/v1777527301/verified_badge_gxj9pn.png" class="verified-badge" alt="verified"></span>
           <span class="time">now</span>
         </div>
         
