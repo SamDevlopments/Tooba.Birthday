@@ -115,8 +115,8 @@ async function preloadAppData(loadingScreen, mobileFrame) {
     console.log('All resources preloaded');
   });
 
-  // Hide loading screen after 10 seconds
-  const loadingDuration = 10000; // 10 seconds exactly
+  // Hide loading screen after 20-30 seconds
+  const loadingDuration = 20000 + Math.random() * 10000; // Random 20-30 seconds
   setTimeout(() => {
     loadingScreen.style.opacity = '0';
     loadingScreen.style.transition = 'opacity 0.5s ease';
@@ -7882,7 +7882,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.sticker-btn').addEventListener('click', () => {
     console.log('Sticker option selected');
     closePlusMenu();
-    // Add sticker functionality here
+    toggleStickerPicker();
   });
 
   // Close plus menu when clicking outside
@@ -8679,6 +8679,205 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 200);
     }
   });
+
+  // ===== Sticker Picker =====
+  const stickerUrls = [
+    "https://i.ibb.co/svmfN7Lq/IMG-8280.png",
+    "https://i.ibb.co/Kz9t1yT4/IMG-5887.png",
+    "https://i.ibb.co/q3JfRckK/IMG-5888.png",
+    "https://i.ibb.co/3mVVfTMm/IMG-5891.png",
+    "https://i.ibb.co/HpfDD0Gy/IMG-5892.png",
+    "https://i.ibb.co/ynS4cYjR/IMG-5893.png",
+    "https://i.ibb.co/M52z5zZb/IMG-5894.png",
+    "https://i.ibb.co/NgLv7H1g/IMG-5896.png",
+    "https://i.ibb.co/sJ10rJVp/IMG-6016.png",
+    "https://i.ibb.co/G3trkGzs/IMG-6038.png",
+    "https://i.ibb.co/pr9dMRK9/IMG-6043.png",
+    "https://i.ibb.co/gbygmyFS/IMG-6050.png",
+    "https://i.ibb.co/GQNV3gST/IMG-6052.png",
+    "https://i.ibb.co/8TjFCsk/IMG-6053.png",
+    "https://i.ibb.co/3mJ5sk3X/ig-ridoll-43.png",
+    "https://i.ibb.co/8DqkZzYB/ig-ridoll-45.png",
+    "https://i.ibb.co/MkQY0rJL/ig-ridoll-47.png",
+    "https://i.ibb.co/93zgCRdm/ig-ridoll-48.png",
+    "https://i.ibb.co/nM3D34qF/ig-ridoll-49.png",
+    "https://i.ibb.co/yBpPKGry/ig-ridoll-54.png",
+    "https://i.ibb.co/xSs0yG00/ig-ridoll-56.png",
+    "https://i.ibb.co/Xxvr6MsZ/ig-ridoll-59.png",
+    "https://i.ibb.co/H0mLJLs/ig-ridoll-60.png",
+    "https://i.ibb.co/Wp3dv7F9/ig-ridoll-13.png",
+    "https://i.ibb.co/Y4mW6ffj/ig-ridoll-14.png",
+    "https://i.ibb.co/3Y8RcX8h/ig-ridoll-15.png",
+    "https://i.ibb.co/HT1tBb14/ig-ridoll-16.png",
+    "https://i.ibb.co/ZpfBNPYY/ig-ridoll-21.png",
+    "https://i.ibb.co/1G3PNbBk/ig-ridoll-30.png",
+    "https://i.ibb.co/Q3CT53dS/ig-ridoll-31.png",
+    "https://i.ibb.co/DxWZBPM/ig-ridoll-32.png",
+    "https://i.ibb.co/53rMCwd/ig-ridoll-33.png",
+    "https://i.ibb.co/YBjmymW8/ig-ridoll-34.png",
+    "https://i.ibb.co/gLGf5Bqh/ig-ridoll-35.png",
+    "https://i.ibb.co/N2Xk0rww/ig-ridoll-36.png",
+    "https://i.ibb.co/8n45QDJ5/ig-ridoll-37.png",
+    "https://i.ibb.co/x8h2cRwv/ig-ridoll-38.png",
+    "https://i.ibb.co/R4hjyhj2/ig-ridoll-39.png",
+    "https://i.ibb.co/XrCkBctq/ig-ridoll-41.png"
+  ];
+
+  let stickerPickerVisible = false;
+
+  // Create sticker picker
+  const stickerPicker = document.createElement('div');
+  stickerPicker.className = 'sticker-picker hidden';
+
+  // Create main content area
+  const stickerContent = document.createElement('div');
+  stickerContent.className = 'sticker-content';
+
+  // Create title with close button
+  const stickerTitle = document.createElement('div');
+  stickerTitle.className = 'sticker-title';
+
+  const stickerTitleText = document.createElement('span');
+  stickerTitleText.className = 'sticker-title-text';
+  stickerTitleText.textContent = 'Stickers';
+  stickerTitle.appendChild(stickerTitleText);
+
+  const closeStickerPickerBtn = document.createElement('button');
+  closeStickerPickerBtn.className = 'close-sticker-picker';
+  closeStickerPickerBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+  closeStickerPickerBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    stickerPicker.classList.add('hidden');
+    stickerPickerVisible = false;
+  });
+  stickerTitle.appendChild(closeStickerPickerBtn);
+
+  // Create sticker grid
+  const stickerGrid = document.createElement('div');
+  stickerGrid.className = 'sticker-grid';
+
+  // Build sticker grid
+  let stickerGridHTML = '';
+  stickerUrls.forEach(sticker => {
+    stickerGridHTML += `<button class="sticker-item" data-url="${sticker}"><img src="${sticker}" alt="sticker" style="width: 80px; height: 80px; object-fit: contain;"></button>`;
+  });
+  stickerGrid.innerHTML = stickerGridHTML;
+
+  stickerContent.appendChild(stickerTitle);
+  stickerContent.appendChild(stickerGrid);
+  stickerPicker.appendChild(stickerContent);
+
+  document.body.appendChild(stickerPicker);
+
+  // Toggle sticker picker
+  function toggleStickerPicker() {
+    stickerPickerVisible = !stickerPickerVisible;
+    if (stickerPickerVisible) {
+      const chatInputRect = chatInput.getBoundingClientRect();
+      const pickerHeight = 350;
+      stickerPicker.style.bottom = `${window.innerHeight - chatInputRect.top + 10}px`;
+      stickerPicker.style.left = `${Math.min(chatInputRect.left, window.innerWidth - 360)}px`;
+      stickerPicker.classList.remove('hidden');
+    } else {
+      stickerPicker.classList.add('hidden');
+    }
+  }
+
+  // Send sticker
+  stickerPicker.addEventListener('click', (e) => {
+    const stickerBtn = e.target.closest('.sticker-item');
+    if (stickerBtn) {
+      const stickerUrl = stickerBtn.getAttribute('data-url');
+      sendStickerMessage(stickerUrl);
+      stickerPicker.classList.add('hidden');
+      stickerPickerVisible = false;
+    }
+  });
+
+  // Close sticker picker when clicking outside
+  document.addEventListener('click', (e) => {
+    if (stickerPickerVisible && !stickerPicker.contains(e.target) && !e.target.closest('.sticker-btn')) {
+      stickerPicker.classList.add('hidden');
+      stickerPickerVisible = false;
+    }
+  });
+
+  // Function to send sticker message
+  function sendStickerMessage(stickerUrl) {
+    const messageWrapper = document.createElement('div');
+    messageWrapper.className = 'message-wrapper sent';
+    messageWrapper.innerHTML = `
+      <div class="message-content-row">
+        <div class="message sent">
+          <img src="${stickerUrl}" class="sticker-message" style="width: 150px; height: 150px; object-fit: contain;">
+        </div>
+        <div class="message-actions">
+          <button class="action-btn reaction-btn" title="React">☺︎</button>
+          <button class="action-btn reply-btn" title="Reply">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4">
+              <path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+            </svg>
+          </button>
+          <button class="action-btn more-btn" title="More">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+              <circle cx="12" cy="5" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="12" cy="19" r="2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+    chatMessages.appendChild(messageWrapper);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    addSwipeToReply(messageWrapper);
+
+    // Trigger AI response
+    showTypingIndicator();
+    setTimeout(async () => {
+      hideTypingIndicator();
+      const aiResponse = await generateAIResponse('[Sticker sent]');
+      const responseWrapper = document.createElement('div');
+      responseWrapper.className = 'message-wrapper received';
+      responseWrapper.innerHTML = `
+        <div class="message-content-row">
+          <div class="message received">
+            <span>${aiResponse}</span>
+          </div>
+        </div>
+      `;
+      chatMessages.appendChild(responseWrapper);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      conversationHistory.push({ role: 'user', message: '[Sticker sent]' });
+      conversationHistory.push({ role: 'assistant', message: aiResponse });
+    }, 1500 + Math.random() * 1000);
+  }
+
+  function showTypingIndicator() {
+    const typingIndicator = document.createElement('div');
+    typingIndicator.className = 'message-wrapper received typing';
+    typingIndicator.innerHTML = `
+      <div class="message-content-row">
+        <div class="message received">
+          <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    `;
+    chatMessages.appendChild(typingIndicator);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return typingIndicator;
+  }
+
+  function hideTypingIndicator() {
+    const typingIndicator = chatMessages.querySelector('.typing');
+    if (typingIndicator) {
+      typingIndicator.remove();
+    }
+  }
   
   // Handle message click to show action buttons
   chatMessages.addEventListener('click', (e) => {
